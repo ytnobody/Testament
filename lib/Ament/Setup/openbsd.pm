@@ -25,8 +25,8 @@ sub install {
     my ($class, $version, $arch, $vmdir) = @_;
     my $install_image = $class->get_install_image($version, $arch, $vmdir);
     my $hda = Ament::Util->create_hda($vmdir);
-    my @opts = ('-hda', $hda, '-cdrom', $install_image);
-    Ament::Util->qemu(@opts, '-boot', 'd');
+    my @opts = ('-hda' => $hda, '-cdrom' => $install_image);
+    Ament::Util->qemu(@opts, '-boot' => 'd');
     return @opts;
 }
 
