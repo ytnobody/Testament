@@ -23,9 +23,9 @@ my %args = (
         'Module::Build' => 0.38,
     },
 
-    no_index    => { 'directory' => [ 'inc' ] },
-    name        => 'Ament',
-    module_name => 'Ament',
+    name            => 'Ament',
+    module_name     => 'Ament',
+    allow_pure_perl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],
 

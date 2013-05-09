@@ -1,14 +1,14 @@
 # NAME
 
-Ament - It's new $module
+Ament - A testing environment builder tool
 
 # SYNOPSIS
 
-    use Ament;
+    $ ament Your::Module --perl 5.14.2 --os openbsd-5.2-i386
 
 # DESCRIPTION
 
-Ament is ...
+Ament is a testing environment builder tool.
 
 # LICENSE
 
