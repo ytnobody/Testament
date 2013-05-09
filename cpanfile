@@ -4,6 +4,7 @@ requires 'LWP::UserAgent', '0';
 requires 'Log::Minimal', '0';
 requires 'IP::Country', '0';
 requires 'JSON', '0';
+requires 'Digest::SHA2', '0';
 
 on 'build' => sub {
     requires 'Test::More', '0.98';
