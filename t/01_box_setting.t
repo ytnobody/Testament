@@ -68,8 +68,22 @@ subtest 'Fetch failed box settings that match for specified version' => sub {
 };
 
 subtest 'Exceptional handlings of fetching faild box settings' => sub {
-    eval { Ament::BoxSetting::fetch_box_setting() };
-    like( $@, qr/fetch_box_setting requires module name\./ );
+    subtest 'When not specified module name' => sub {
+        eval { Ament::BoxSetting::fetch_box_setting() };
+        like( $@, qr/fetch_box_setting requires module name\./ );
+    };
+
+    subtest 'When remote server returns status code that is not 200 a few times' => sub {
+        my $original_furl_get = *Furl::get{CODE};
+        undef *Furl::get;
+        *Furl::get = sub {return {code => '500'}};
+
+        eval {Ament::BoxSetting::fetch_box_setting('Ament::Test::Sandbox')};
+        like( $@, qr/Connection timeout \(Attempt 3 times\)\./ );
+
+        undef *Furl::get;
+        *Furl::get = $original_furl_get;
+    };
 };
 
 subtest 'Construct JSON url' => sub {

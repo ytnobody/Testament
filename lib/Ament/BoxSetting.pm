@@ -27,14 +27,22 @@ sub fetch_box_setting {
 sub _download_json_test_report {
     my ($url) = @_;
 
-    # TODO Should it be configurable time out setting?
-    my $response = new Furl()->get($url);
-    if ( $response->{code} != SUCCESS_CODE ) {
+    my $error_count             = 0;
+    my $permissible_error_count = 3;    # <= TODO consider!
 
-        # TODO Write exceptional handling
-    }
+    my $download;
+    $download = sub {
+        my $response = Furl->new()->get($url);    # TODO configurable timeout?
+        if ( $response->{code} != SUCCESS_CODE ) {
+            if ( ++$error_count > $permissible_error_count ) {
+                croak "Connection timeout (Attempt $permissible_error_count times)."      # TODO consider!
+            }
+            return $download->();
+        }
+        return $response->{content};
+    };
 
-    return $response->{content};
+    return $download->();
 }
 
 sub _construct_report_json_url {
