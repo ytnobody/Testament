@@ -21,4 +21,9 @@ sub get {
     return $res->content;
 }
 
+sub wget {
+    my ($class, $url, $saveto) = @_;
+    `wget $url --output-document=$saveto`;
+}
+
 1;

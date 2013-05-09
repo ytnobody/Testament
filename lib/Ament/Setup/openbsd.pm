@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Ament::URLFetcher;
 use Ament::Util;
+use Ament::FastestMirror;
 use File::Spec;
 
 our @MIRRORS;
@@ -18,7 +19,7 @@ sub mirrors {
 sub opt_mirror {
     my $class = shift;
     my @mirrors = $class->mirrors;
-    return $mirrors[int(rand($#mirrors + 1))];
+    return Ament::FastestMirror->pickup(@mirrors);
 }
 
 sub install {
@@ -37,11 +38,7 @@ sub get_install_image {
     return $install_image if -e $install_image;
     my $mirror = $class->opt_mirror;
     my $url = sprintf("%s/%s/%s/%s", $mirror, $version, $arch, $isofile);
-    my $data = Ament::URLFetcher->get($url);
-    open my $fh, '>', $install_image or die "could not write file ".$install_image;
-    print $fh $data;
-    close $fh;
-    undef $data;
+    Ament::URLFetcher->wget($url, $install_image);
     return $install_image;
 }
 
