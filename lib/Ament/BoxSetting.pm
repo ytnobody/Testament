@@ -5,8 +5,10 @@ use warnings;
 use Carp;
 use Furl;
 use JSON;
+use List::Util qw/first/;
 
 use constant SUCCESS_CODE => 200;
+use constant SUPPORTED_OS => ( 'OpenBSD', 'FreeBSD', 'GNU/Linux' );    # TODO
 
 sub fetch_box_setting {
     my ( $distro, $version ) = @_;
@@ -14,13 +16,16 @@ sub fetch_box_setting {
     # TODO consider messages.
     $distro or croak "fetch_box_setting requires module name.";
 
-    my $json = _download_json_test_report( _construct_report_json_url($distro) );
+    my $json =
+      _download_json_test_report( _construct_report_json_url($distro) );
     $json = JSON::decode_json($json);
 
-    my @fail_boxes = grep { $_->{status} eq 'FAIL' } (@$json);
+    my @fail_boxes = grep { $_->{status} eq 'FAIL' } @$json;
+    @fail_boxes = _filter_by_supported_os(@fail_boxes);
+    @fail_boxes = sort { $a->{version} <=> $b->{version} } @fail_boxes; # sort by version
 
     $version or return @fail_boxes;
-    @fail_boxes = grep { $_->{version} == $version } (@fail_boxes);
+    @fail_boxes = grep { $_->{version} == $version } @fail_boxes;
     return @fail_boxes;
 }
 
@@ -33,9 +38,11 @@ sub _download_json_test_report {
     my $download;
     $download = sub {
         my $response = Furl->new()->get($url);    # TODO configurable timeout?
+             # TODO add handling when it returns 404
         if ( $response->{code} != SUCCESS_CODE ) {
             if ( ++$error_count > $permissible_error_count ) {
-                croak "Connection timeout (Attempt $permissible_error_count times)."      # TODO consider!
+                croak "Connection timeout "
+                  . "(Attempt $permissible_error_count times)." # TODO consider!
             }
             return $download->();
         }
@@ -54,4 +61,14 @@ sub _construct_report_json_url {
 
     return "$base_url/$first_letter/$distro.json";
 }
+
+sub _filter_by_supported_os {
+    my (@boxes) = @_;
+
+    @boxes = grep {
+        my $fail_box = $_;
+        grep { $_ eq $fail_box->{ostext} } SUPPORTED_OS;
+    } @boxes;
+}
+
 1;
