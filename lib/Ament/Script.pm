@@ -55,7 +55,7 @@ sub _CMD_failures {
     my @failed_boxes = Ament::BoxSetting::fetch_box_setting($distro, $version);
     foreach my $box (@failed_boxes) {
         # TODO consider layout
-        print "$box->{version} perl-$box->{perl} $box->{ostext} $box->{platform}\n";
+        print "$box->{version} perl-$box->{perl} $box->{ostext} $box->{osvers} $box->{platform}\n";
     }
 }
 
