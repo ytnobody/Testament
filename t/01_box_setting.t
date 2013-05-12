@@ -3,58 +3,33 @@
 use strict;
 use warnings;
 use FindBin;
-use Scope::Guard;
 
 use Ament::BoxSetting;
 
+use t::Util;
 use Test::More;
 
-my $original_download_function = *Ament::BoxSetting::_download_json_test_report{CODE};
-my $mock_download_function = sub {
-    my $mock_json_file = "$FindBin::Bin/resource/box-setting.json";
-
-    open my $fh, '<', $mock_json_file;
-    my $json = '';
-    $json .= $_ foreach (<$fh>);
-    close $fh;
-
-    return $json;
-};
-my $setup = sub {
-    undef *Ament::BoxSetting::_download_json_test_report;
-    *Ament::BoxSetting::_download_json_test_report = $mock_download_function;
-
-    return Scope::Guard->new(
-        sub {
-            undef *Ament::BoxSetting::_download_json_test_report;
-            *Ament::BoxSetting::_download_json_test_report = $original_download_function;
-        }
-    );
-};
-
 subtest 'Fetch all of failed box settings' => sub {
-    my $guard = $setup->();
+    # my $guard = $setup->();
+    my $guard = t::Util::setup_mock_downloader();
 
     my @fail_boxes =
       Ament::BoxSetting::fetch_box_setting("Ament::Test::Sandbox");
 
     is scalar(@fail_boxes), 2;
+
+    my $i = 1;
     foreach my $box (@fail_boxes) {
         is $box->{status}, 'FAIL';
-        if ($box->{id} eq '2') {
-            is $box->{version}, '0.01';
-            next;
-        }
-        if ($box->{id} eq '3') {
-            is $box->{version}, '0.02';
-            next;
-        }
-        fail 'Detect unexpected box setting.';
+
+        is $box->{version}, '0.0' . $i;
+        $i++;
     }
 };
 
 subtest 'Fetch failed box settings that match for specified version' => sub {
-    my $guard = $setup->();
+    # my $guard = $setup->();
+    my $guard = t::Util::setup_mock_downloader();
 
     my @fail_boxes =
       Ament::BoxSetting::fetch_box_setting("Ament::Test::Sandbox", '0.02');

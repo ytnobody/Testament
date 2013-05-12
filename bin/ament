@@ -1,0 +1,9 @@
+#!perl
+
+use strict;
+use warnings;
+use utf8;
+use Ament::Script;
+
+my $ament = Ament::Script->new(@ARGV);
+$ament->execute();
