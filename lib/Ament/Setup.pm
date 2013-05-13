@@ -4,18 +4,16 @@ use warnings;
 use File::Spec;
 use Ament::Config;
 use Ament::Util;
-use Ament::Virt;
 
 sub setup {
-    my ($class, $os) = @_;
-    my $vmdir = File::Spec->rel2abs(File::Spec->catdir($Ament::Config::VMDIR, $os));
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my $vmdir = File::Spec->rel2abs(File::Spec->catdir($Ament::Config::VMDIR, $os_text));
     Ament::Util->mkdir($vmdir);
-    if (my($dist, $osver, $arch) = $os =~ /^(.+)\-(.+)\-(.+)?/) {
-        my $submod = $class->submodule($dist);
-        my $virt = Ament::Virt->new(arch => $arch);
-        return $submod->install($osver, $virt, $vmdir);
+    if ( $os_text && $os_version && $arch ) {
+        my $submod = $class->submodule($os_text);
+        return $submod->install( $os_version, $arch, $vmdir );
     }
-    die 'invalid os identifier '.$os;
+    die 'invalid os identifier ' . $os_text;
 }
 
 sub submodule {

@@ -10,9 +10,10 @@ our $VERSION = "0.01";
 my $config = Ament::Config->load;
 
 sub setup {
-    my ($class, $os) = @_;
-    my @options = Ament::Setup->setup($os) or die 'could not setup '.$os;
-    $config->{$os} = \@options;
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my @options = Ament::Setup->setup( $os_text, $os_version, $arch )
+      or die 'could not setup ' . $os_text;
+    $config->{$os_text} = \@options;
     Ament::Config->save($config);
     return 1;
 }
