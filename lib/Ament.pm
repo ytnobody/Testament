@@ -4,18 +4,10 @@ use strict;
 use warnings;
 use Ament::Setup;
 use Ament::Config;
-use Ament::Util;
+use Ament::Virt;
 
 our $VERSION = "0.01";
 my $config = Ament::Config->load;
-
-sub up {
-    my ($class, $os) = @_;
-    $class->setup($os) unless $config->{$os};
-    die 'missing configuration for '.$os unless $config->{$os};
-    my @options = @{$config->{$os}};
-    Ament::Util->qemu(@options);
-}
 
 sub setup {
     my ($class, $os) = @_;
