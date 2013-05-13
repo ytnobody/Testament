@@ -34,14 +34,23 @@ sub execute {
 sub _CMD_create {
     my ($self) = @_;
 
-    my @args    = @{ $self->{args} };
+    my @args = @{ $self->{args} };
     unless (@args) {
+
+        # TODO implement!
         # interaction mode
         ...;
     }
 
-    my ($perl_version, $os_name, $arch) = @args;
-    ...;
+    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    Ament->setup( $os_text, $os_version, $arch );
+}
+
+# TODO Is it really necessary?
+# Alias of `create`
+sub _CMD_install {
+    my ($self) = @_;
+    $self->_CMD_create();
 }
 
 # Fetch and show boxes that failures testing.
