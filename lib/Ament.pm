@@ -9,14 +9,6 @@ use Ament::Util;
 our $VERSION = "0.01";
 my $config = Ament::Config->load;
 
-sub qemu {
-    my $class = shift;
-    my $options = join(' ', @_);
-    my $port = empty_port();
-    my $cmd = sprintf('%s %s --redir tcp:%s::22', Ament::Config->qemu_bin, $options, $port);
-    `$cmd`;
-}
-
 sub up {
     my ($class, $os) = @_;
     $class->setup($os) unless $config->{$os};

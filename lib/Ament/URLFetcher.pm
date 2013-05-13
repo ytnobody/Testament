@@ -21,4 +21,12 @@ sub get {
     return $res->content;
 }
 
+sub wget {
+    my ($class, $url, $saveto) = @_;
+    if( my $code = system("wget $url --output-document=$saveto") ) {
+        critf('failed to fetching : exit code = %s', $code);
+        die;
+    }
+}
+
 1;

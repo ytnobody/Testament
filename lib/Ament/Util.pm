@@ -42,4 +42,16 @@ sub mkdir {
     }
 }
 
+sub file_slurp {
+    my ($class, $path) = @_;
+    my $fh;
+    unless (open $fh, '<', $path) {
+        critf('could not read file : %s', $path);
+        return;
+    }
+    my $data = join('', map {$_} <$fh>);
+    close $fh;
+    return $data;
+}
+
 1;
