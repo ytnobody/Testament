@@ -2,14 +2,15 @@ package Ament::Config;
 use strict;
 use warnings;
 use File::Spec;
+use File::Which 'which';
 use File::Basename 'dirname';
 use Data::Dumper;
 
-our $QEMU_BIN = do {my $path = `which qemu`; chomp $path; $path};
-our $QEMU_IMG_BIN = do {my $path = `which qemu-img`; chomp $path; $path};
-our $CONF_FILE = File::Spec->catfile($ENV{HOME}, qw(.ament oslist.pl));
-our $WORKDIR = dirname($CONF_FILE);
-our $VMDIR = File::Spec->catdir($WORKDIR,'vm');
+our $QEMU_BIN     = $ENV{AMENT_QEMU_BIN}     || which('qemu');
+our $QEMU_IMG_BIN = $ENV{AMENT_QEMU_IMG_BIN} || which('qemu-img');
+our $CONF_FILE    = $ENV{AMENT_CONF_FILE}    || File::Spec->catfile($ENV{HOME}, qw(.ament oslist.pl));
+our $WORKDIR      = $ENV{AMENT_WORKDIR}      || dirname($CONF_FILE);
+our $VMDIR        = $ENV{AMENT_VMDIR}        || File::Spec->catdir($WORKDIR,'vm');
 
 __PACKAGE__->create unless -e $CONF_FILE;
 
