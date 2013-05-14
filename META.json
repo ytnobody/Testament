@@ -1,5 +1,5 @@
 {
-   "abstract" : "A testing environment builder tool",
+   "abstract" : "TEST AssignMENT",
    "author" : [
       "ytnobody <>"
    ],
@@ -27,6 +27,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
+            "Capture::Tiny" : "0",
             "Scope::Guard" : "0.20",
             "Test::More" : "0.98"
          }
@@ -48,7 +49,12 @@
       },
       "runtime" : {
          "requires" : {
-            "LWP::UserAgent" : "0",
+            "Class::Load" : "0",
+            "Digest::SHA2" : "0",
+            "File::Which" : "0",
+            "Furl" : "2.10",
+            "JSON" : "0",
+            "List::Util" : "0",
             "Log::Minimal" : "0",
             "Net::EmptyPort" : "0",
             "perl" : "5.008005"

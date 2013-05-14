@@ -1,13 +1,13 @@
 package Testament::URLFetcher;
 use strict;
 use warnings;
-use LWP::UserAgent;
+use Furl;
 use Log::Minimal;
 
 our $VERSION = 0.01;
-our $AGENT ||= LWP::UserAgent->new(
-    agent => __PACKAGE__.'/'.$VERSION,
-    timeout => 86400*7,
+our $AGENT ||= Furl->new(
+    agent   => __PACKAGE__ . '/' . $VERSION,
+    timeout => 86400 * 7,
 );
 
 sub get {
