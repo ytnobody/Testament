@@ -68,6 +68,13 @@ sub _CMD_failures {
     }
 }
 
+# Boot box
+sub _CMD_boot {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    Testament->boot( $os_text, $os_version, $arch );
+}
+
 # Show version
 sub _CMD_version {
     print "$Testament::VERSION\n";
