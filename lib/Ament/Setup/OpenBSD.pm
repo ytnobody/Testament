@@ -1,9 +1,10 @@
-package Ament::Setup::openbsd;
+package Ament::Setup::OpenBSD;
 use strict;
 use warnings;
 use Ament::URLFetcher;
 use Ament::Util;
 use Ament::FastestMirror;
+use Ament::Virt;
 use File::Spec;
 use Log::Minimal;
 use Digest::SHA2;
@@ -25,10 +26,15 @@ sub opt_mirror {
 }
 
 sub install {
-    my ($class, $version, $virt, $vmdir) = @_;
-    my $install_image = $class->get_install_image($version, $virt->arch, $vmdir);
+    my ( $class, $version, $arch, $vmdir ) = @_;
+
+    # arch_opt: e.g. "thread-multi", "int64", etc...
+    my $arch_opt;
+    ( $arch, $arch_opt ) = $arch =~ /^OpenBSD\.(.*)-openbsd(?:-(.*))?/;
+    my $virt = Ament::Virt->new( arch => $arch );
+    my $install_image = $class->get_install_image( $version, $arch, $vmdir );
     if ($install_image) {
-        my $hda = File::Spec->catfile($vmdir, 'hda.img');
+        my $hda = File::Spec->catfile( $vmdir, 'hda.img' );
         $virt->create_image($hda);
         $virt->hda($hda);
         $virt->cdrom($install_image);
