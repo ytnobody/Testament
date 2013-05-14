@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use FindBin;
 
-use Ament::BoxSetting;
+use Testament::BoxSetting;
 
 use t::Util;
 use Test::More;
@@ -14,7 +14,7 @@ subtest 'Fetch all of failed box settings' => sub {
     my $guard = t::Util::setup_mock_downloader();
 
     my @fail_boxes =
-      Ament::BoxSetting::fetch_box_setting("Ament::Test::Sandbox");
+      Testament::BoxSetting::fetch_box_setting("Testament::Test::Sandbox");
 
     is scalar(@fail_boxes), 2;
 
@@ -32,7 +32,7 @@ subtest 'Fetch failed box settings that match for specified version' => sub {
     my $guard = t::Util::setup_mock_downloader();
 
     my @fail_boxes =
-      Ament::BoxSetting::fetch_box_setting("Ament::Test::Sandbox", '0.02');
+      Testament::BoxSetting::fetch_box_setting("Testament::Test::Sandbox", '0.02');
 
     is scalar(@fail_boxes), 1;
 
@@ -44,7 +44,7 @@ subtest 'Fetch failed box settings that match for specified version' => sub {
 
 subtest 'Exceptional handlings of fetching faild box settings' => sub {
     subtest 'When not specified module name' => sub {
-        eval { Ament::BoxSetting::fetch_box_setting() };
+        eval { Testament::BoxSetting::fetch_box_setting() };
         like( $@, qr/fetch_box_setting requires module name\./ );
     };
 
@@ -53,7 +53,7 @@ subtest 'Exceptional handlings of fetching faild box settings' => sub {
         undef *Furl::get;
         *Furl::get = sub {return {code => '500'}};
 
-        eval {Ament::BoxSetting::fetch_box_setting('Ament::Test::Sandbox')};
+        eval {Testament::BoxSetting::fetch_box_setting('Testament::Test::Sandbox')};
         like( $@, qr/Connection timeout \(Attempt 3 times\)\./ );
 
         undef *Furl::get;
@@ -63,12 +63,12 @@ subtest 'Exceptional handlings of fetching faild box settings' => sub {
 
 subtest 'Construct JSON url' => sub {
     my $base_url = 'http://www.cpantesters.org/distro';
-    my $expected = "$base_url/A/Ament-Test-Sandbox.json";
+    my $expected = "$base_url/A/Testament-Test-Sandbox.json";
 
-    my $got = Ament::BoxSetting::_construct_report_json_url('Ament-Test-Sandbox');
+    my $got = Testament::BoxSetting::_construct_report_json_url('Testament-Test-Sandbox');
     is $got, $expected, 'Hyphen separated';
 
-    $got = Ament::BoxSetting::_construct_report_json_url('Ament::Test::Sandbox');
+    $got = Testament::BoxSetting::_construct_report_json_url('Testament::Test::Sandbox');
     is $got, $expected, 'Double colon separated';
 };
 

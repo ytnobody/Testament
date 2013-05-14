@@ -1,4 +1,4 @@
-package Ament::Util;
+package Testament::Util;
 use strict;
 use warnings;
 use Log::Minimal;

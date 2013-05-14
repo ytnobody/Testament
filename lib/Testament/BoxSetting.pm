@@ -1,4 +1,4 @@
-package Ament::BoxSetting;
+package Testament::BoxSetting;
 
 use strict;
 use warnings;

@@ -1,20 +1,20 @@
-package Ament;
+package Testament;
 use 5.008005;
 use strict;
 use warnings;
-use Ament::Setup;
-use Ament::Config;
-use Ament::Virt;
+use Testament::Setup;
+use Testament::Config;
+use Testament::Virt;
 
 our $VERSION = "0.01";
-my $config = Ament::Config->load;
+my $config = Testament::Config->load;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
-    my @options = Ament::Setup->setup( $os_text, $os_version, $arch )
+    my @options = Testament::Setup->setup( $os_text, $os_version, $arch )
       or die 'could not setup ' . $os_text;
     $config->{$os_text} = \@options;
-    Ament::Config->save($config);
+    Testament::Config->save($config);
     return 1;
 }
 
@@ -25,7 +25,7 @@ __END__
 
 =head1 NAME
 
-Ament - A testing environment builder tool
+Testament - TEST AssignMENT
 
 =head1 SYNOPSIS
 
@@ -33,7 +33,7 @@ Ament - A testing environment builder tool
 
 =head1 DESCRIPTION
 
-Ament is a testing environment builder tool.
+Testament is a testing environment builder tool.
 
 =head1 LICENSE
 

@@ -1,4 +1,4 @@
-package Ament::Config;
+package Testament::Config;
 use strict;
 use warnings;
 use File::Spec;

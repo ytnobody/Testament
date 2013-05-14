@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Ament::Script;
+use Testament::Script;
 
-my $ament = Ament::Script->new(@ARGV);
+my $ament = Testament::Script->new(@ARGV);
 $ament->execute();

@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 
 use_ok $_ for qw(
-    Ament
+    Testament
 );
 
 done_testing;

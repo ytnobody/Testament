@@ -23,8 +23,8 @@ my %args = (
         'Module::Build' => 0.38,
     },
 
-    name            => 'Ament',
-    module_name     => 'Ament',
+    name            => 'Testament',
+    module_name     => 'Testament',
     allow_pure_perl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],

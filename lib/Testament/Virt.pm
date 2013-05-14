@@ -1,4 +1,4 @@
-package Ament::Virt;
+package Testament::Virt;
 use strict;
 use warnings;
 use Class::Load qw[load_class is_class_loaded];

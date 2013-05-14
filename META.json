@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "Ament",
+   "name" : "Testament",
    "no_index" : {
       "directory" : [
          "t",
@@ -58,13 +58,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/ytnobody/Ament/issues"
+         "web" : "https://github.com/ytnobody/Testament/issues"
       },
-      "homepage" : "https://github.com/ytnobody/Ament",
+      "homepage" : "https://github.com/ytnobody/Testament",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/ytnobody/Ament.git",
-         "web" : "https://github.com/ytnobody/Ament"
+         "url" : "git://github.com/ytnobody/Testament.git",
+         "web" : "https://github.com/ytnobody/Testament"
       }
    },
    "version" : "0.01",

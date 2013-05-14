@@ -8,10 +8,10 @@
         "platform":"x86_64-linux-thread-multi-ld",
         "id":"1",
         "version":"0.01",
-        "dist":"Ament-Test-Sandbox",
-        "distribution":"Ament-Test-Sandbox",
+        "dist":"Testament-Test-Sandbox",
+        "distribution":"Testament-Test-Sandbox",
         "perl":"5.14.1",
-        "distversion":"Ament-Test-Sandbox-0.01"
+        "distversion":"Testament-Test-Sandbox-0.01"
     },
     {
         "ostext":"GNU/Linux",
@@ -22,10 +22,10 @@
         "platform":"x86_64-linux-thread-multi",
         "id":"3",
         "version":"0.02",
-        "dist":"Ament-Test-Sandbox",
-        "distribution":"Ament-Test-Sandbox",
+        "dist":"Testament-Test-Sandbox",
+        "distribution":"Testament-Test-Sandbox",
         "perl":"5.10.0",
-        "distversion":"Ament-Test-Sandbox-0.02"
+        "distversion":"Testament-Test-Sandbox-0.02"
     },
     {
         "ostext":"OpenBSD",
@@ -36,10 +36,10 @@
         "platform":"OpenBSD.i386-openbsd-thread-multi",
         "id":"2",
         "version":"0.01",
-        "dist":"Ament-Test-Sandbox",
-        "distribution":"Ament-Test-Sandbox",
+        "dist":"Testament-Test-Sandbox",
+        "distribution":"Testament-Test-Sandbox",
         "perl":"5.8.9",
-        "distversion":"Ament-Test-Sandbox-0.01"
+        "distversion":"Testament-Test-Sandbox-0.01"
     },
     {
         "ostext":"Windows (Win32)",
@@ -50,9 +50,9 @@
         "platform":"MSWin32-x86-multi-thread-64int",
         "id":"4",
         "version":"0.02",
-        "dist":"Ament-Test-Sandbox",
-        "distribution":"Ament-Test-Sandbox",
+        "dist":"Testament-Test-Sandbox",
+        "distribution":"Testament-Test-Sandbox",
         "perl":"5.17.10",
-        "distversion":"Ament-Test-Sandbox-0.08"
+        "distversion":"Testament-Test-Sandbox-0.08"
     }
 ]

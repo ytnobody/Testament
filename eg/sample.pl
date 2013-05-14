@@ -5,6 +5,6 @@ use File::Spec;
 use File::Basename 'dirname';
 use lib (File::Spec->catdir(dirname(__FILE__), '..', 'lib'));
 
-use Ament;
+use Testament;
 
-Ament->setup('openbsd-5.2-i386');
+Testament->setup('openbsd-5.2-i386');

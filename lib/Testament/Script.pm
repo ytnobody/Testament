@@ -1,11 +1,11 @@
-package Ament::Script;
+package Testament::Script;
 
 use strict;
 use warnings;
 use utf8;
 use Carp;
-use Ament;
-use Ament::BoxSetting;
+use Testament;
+use Testament::BoxSetting;
 
 sub new {
     my ( $class, @args ) = @_;
@@ -43,7 +43,7 @@ sub _CMD_create {
     }
 
     my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
-    Ament->setup( $os_text, $os_version, $arch );
+    Testament->setup( $os_text, $os_version, $arch );
 }
 
 # TODO Is it really necessary?
@@ -61,7 +61,7 @@ sub _CMD_failures {
     my $distro  = shift @args;
     my $version = shift @args;
 
-    my @failed_boxes = Ament::BoxSetting::fetch_box_setting($distro, $version);
+    my @failed_boxes = Testament::BoxSetting::fetch_box_setting($distro, $version);
     foreach my $box (@failed_boxes) {
         # TODO consider layout
         print "$box->{version} perl-$box->{perl} $box->{ostext} $box->{osvers} $box->{platform}\n";
@@ -70,7 +70,7 @@ sub _CMD_failures {
 
 # Show version
 sub _CMD_version {
-    print "$Ament::VERSION\n";
+    print "$Testament::VERSION\n";
 }
 
 # Show help tips

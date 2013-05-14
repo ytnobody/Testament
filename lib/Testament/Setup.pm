@@ -1,14 +1,14 @@
-package Ament::Setup;
+package Testament::Setup;
 use strict;
 use warnings;
 use File::Spec;
-use Ament::Config;
-use Ament::Util;
+use Testament::Config;
+use Testament::Util;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
-    my $vmdir = File::Spec->rel2abs(File::Spec->catdir($Ament::Config::VMDIR, $os_text));
-    Ament::Util->mkdir($vmdir);
+    my $vmdir = File::Spec->rel2abs(File::Spec->catdir($Testament::Config::VMDIR, $os_text));
+    Testament::Util->mkdir($vmdir);
     if ( $os_text && $os_version && $arch ) {
         my $submod = $class->submodule($os_text);
         return $submod->install( $os_version, $arch, $vmdir );

@@ -1,4 +1,4 @@
-package Ament::URLFetcher;
+package Testament::URLFetcher;
 use strict;
 use warnings;
 use LWP::UserAgent;

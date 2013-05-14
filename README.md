@@ -1,6 +1,6 @@
 # NAME
 
-Ament - A testing environment builder tool
+Testament - A testing environment builder tool
 
 # SYNOPSIS
 
@@ -8,7 +8,7 @@ Ament - A testing environment builder tool
 
 # DESCRIPTION
 
-Ament is a testing environment builder tool.
+Testament is a testing environment builder tool.
 
 # LICENSE
 

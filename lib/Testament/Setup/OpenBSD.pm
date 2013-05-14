@@ -1,10 +1,10 @@
-package Ament::Setup::OpenBSD;
+package Testament::Setup::OpenBSD;
 use strict;
 use warnings;
-use Ament::URLFetcher;
-use Ament::Util;
-use Ament::FastestMirror;
-use Ament::Virt;
+use Testament::URLFetcher;
+use Testament::Util;
+use Testament::FastestMirror;
+use Testament::Virt;
 use File::Spec;
 use Log::Minimal;
 use Digest::SHA2;
@@ -14,7 +14,7 @@ our @MIRRORS;
 sub mirrors {
     my $class = shift;
     return @MIRRORS if @MIRRORS;
-    my $res = Ament::URLFetcher->get('http://www.openbsd.org/ftp.html');
+    my $res = Testament::URLFetcher->get('http://www.openbsd.org/ftp.html');
     @MIRRORS = $res =~ /href\=\"(ftp:\/\/.+?)\"/g;
     return @MIRRORS;
 }
@@ -22,7 +22,7 @@ sub mirrors {
 sub opt_mirror {
     my $class = shift;
     my @mirrors = $class->mirrors;
-    return Ament::FastestMirror->pickup(@mirrors);
+    return Testament::FastestMirror->pickup(@mirrors);
 }
 
 sub install {
@@ -31,7 +31,7 @@ sub install {
     # arch_opt: e.g. "thread-multi", "int64", etc...
     my $arch_opt;
     ( $arch, $arch_opt ) = $arch =~ /^OpenBSD\.(.*)-openbsd(?:-(.*))?/;
-    my $virt = Ament::Virt->new( arch => $arch );
+    my $virt = Testament::Virt->new( arch => $arch );
     my $install_image = $class->get_install_image( $version, $arch, $vmdir );
     if ($install_image) {
         my $hda = File::Spec->catfile( $vmdir, 'hda.img' );
@@ -53,7 +53,7 @@ sub get_install_image {
     unless( $class->check_install_image($version, $arch, $vmdir, $isofile) ) {
         my $mirror = $class->opt_mirror;
         my $url = sprintf("%s/%s/%s/%s", $mirror, $version, $arch, $isofile);
-        Ament::URLFetcher->wget($url, $install_image);
+        Testament::URLFetcher->wget($url, $install_image);
         return unless $class->check_install_image($version, $arch, $vmdir, $isofile);
     }
     return $install_image;
@@ -69,9 +69,9 @@ sub check_install_image {
     }
     my $mirror = $class->opt_mirror;
     my $url = sprintf("%s/%s/%s/%s", $mirror, $version, $arch, 'SHA256');
-    Ament::URLFetcher->wget($url, $digest_file);
+    Testament::URLFetcher->wget($url, $digest_file);
     my $filename = my $sha256 = undef;
-    for my $line (split /\n/, Ament::Util->file_slurp($digest_file)) {
+    for my $line (split /\n/, Testament::Util->file_slurp($digest_file)) {
         chomp $line;
         ($filename, $sha256) = $line =~ /^SHA256 \((.+)\) = ([0-9a-f]+)$/;
         last if $filename eq $isofile;
