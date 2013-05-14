@@ -63,7 +63,7 @@ subtest 'Exceptional handlings of fetching faild box settings' => sub {
 
 subtest 'Construct JSON url' => sub {
     my $base_url = 'http://www.cpantesters.org/distro';
-    my $expected = "$base_url/A/Testament-Test-Sandbox.json";
+    my $expected = "$base_url/T/Testament-Test-Sandbox.json";
 
     my $got = Testament::BoxSetting::_construct_report_json_url('Testament-Test-Sandbox');
     is $got, $expected, 'Hyphen separated';

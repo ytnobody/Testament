@@ -1,0 +1,9 @@
+#!perl
+
+use strict;
+use warnings;
+use utf8;
+use Testament::Script;
+
+my $testament = Testament::Script->new(@ARGV);
+$testament->execute();

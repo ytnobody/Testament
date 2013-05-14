@@ -13,8 +13,8 @@ use Test::More;
 subtest 'Show version' => sub {
     my $test_showing_version = sub {
         my @args  = @_;
-        my $ament = Testament::Script->new(@args);
-        my ($got) = capture { $ament->execute() };
+        my $testament = Testament::Script->new(@args);
+        my ($got) = capture { $testament->execute() };
         chomp $got;
         is $got, $Testament::VERSION;
     };
@@ -30,9 +30,9 @@ subtest 'Show version' => sub {
 subtest 'Show help' => sub {
     my $test_showing_help = sub {
         my (@args) = @_;
-        my $ament = Testament::Script->new(@args);
-        my ($got) = capture { $ament->execute() };
-        like $got, qr/Usage: ament COMMAND \[\.\.\.\]/;
+        my $testament = Testament::Script->new(@args);
+        my ($got) = capture { $testament->execute() };
+        like $got, qr/Usage: testament COMMAND \[\.\.\.\]/;
     };
 
     subtest 'by empty' => sub {
@@ -48,8 +48,8 @@ subtest 'Fetch and show boxes that failure testing' => sub {
 
     my $fetch_failures = sub {
         my @args  = @_;
-        my $ament = Testament::Script->new(@args);
-        my ($got) = capture { $ament->execute() };
+        my $testament = Testament::Script->new(@args);
+        my ($got) = capture { $testament->execute() };
         return $got;
     };
 
@@ -65,8 +65,8 @@ subtest 'Fetch and show boxes that failure testing' => sub {
 };
 
 subtest 'Detect illegal command' => sub {
-    my $ament = Testament::Script->new(('ILLEGAL_COMMAND'));
-    eval { $ament->execute() };
+    my $testament = Testament::Script->new(('ILLEGAL_COMMAND'));
+    eval { $testament->execute() };
     like $@, qr/! Unknown command: 'ILLEGAL_COMMAND'/;
 };
 

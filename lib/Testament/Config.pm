@@ -5,9 +5,9 @@ use File::Spec;
 use File::Basename 'dirname';
 use Data::Dumper;
 
-our $CONF_FILE    = $ENV{AMENT_CONF_FILE}    || File::Spec->catfile($ENV{HOME}, qw(.ament oslist.pl));
-our $WORKDIR      = $ENV{AMENT_WORKDIR}      || dirname($CONF_FILE);
-our $VMDIR        = $ENV{AMENT_VMDIR}        || File::Spec->catdir($WORKDIR,'vm');
+our $CONF_FILE    = $ENV{TESTAMENT_CONF_FILE}    || File::Spec->catfile($ENV{HOME}, qw(.testament oslist.pl));
+our $WORKDIR      = $ENV{TESTAMENT_WORKDIR}      || dirname($CONF_FILE);
+our $VMDIR        = $ENV{TESTAMENT_VMDIR}        || File::Spec->catdir($WORKDIR,'vm');
 
 __PACKAGE__->create unless -e $CONF_FILE;
 

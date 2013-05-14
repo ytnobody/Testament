@@ -77,7 +77,7 @@ sub _CMD_version {
 sub _CMD_help {
     # TODO implement!!!!
     my $help = << 'EOH';
-Usage: ament COMMAND [...]
+Usage: testament COMMAND [...]
 EOH
 
     print "$help";
