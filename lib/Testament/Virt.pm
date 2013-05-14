@@ -27,4 +27,11 @@ sub load_subclass {
     return $subclass;
 }
 
+sub as_hashref {
+    my $self = shift;
+    return +{
+        map {($_ => $self->$_)} keys %$self
+    };
+}
+
 1;

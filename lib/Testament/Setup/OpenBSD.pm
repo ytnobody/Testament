@@ -39,6 +39,8 @@ sub install {
         $virt->hda($hda);
         $virt->cdrom($install_image);
         $virt->boot('d');
+        $virt->{cdrom} = undef;
+        return $virt;
     }
     else {
         critf('install image file is illegal');

@@ -8,12 +8,13 @@ use Testament::Virt;
 
 our $VERSION = "0.01";
 my $config = Testament::Config->load;
+use Data::Dumper;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
-    my @options = Testament::Setup->setup( $os_text, $os_version, $arch )
-      or die 'could not setup ' . $os_text;
-    $config->{$os_text} = \@options;
+    my $virt = Testament::Setup->setup( $os_text, $os_version, $arch );
+    die sprintf('could not setup %s', $os_text) unless $virt;
+    $config->{$os_text} = $virt->as_hashref;
     Testament::Config->save($config);
     return 1;
 }
