@@ -19,7 +19,7 @@ sub boot {
 
 sub create_image {
     my ($self, $path, $size) = @_;
-    $size ||= '4G';
+    $size ||= '20G';
     my $subclass = $self->load_subclass;
     $subclass->create_image($path, $size);
 }
