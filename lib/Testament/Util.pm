@@ -25,4 +25,9 @@ sub file_slurp {
     return $data;
 }
 
+sub box_identity {
+    my ($class, $os_text, $os_version, $arch) = @_;
+    return join('-', $os_text, $os_version, $arch);
+}
+
 1;

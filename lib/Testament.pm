@@ -5,16 +5,17 @@ use warnings;
 use Testament::Setup;
 use Testament::Config;
 use Testament::Virt;
+use Testament::Util;
 
 our $VERSION = "0.01";
 my $config = Testament::Config->load;
-use Data::Dumper;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
     my $virt = Testament::Setup->setup( $os_text, $os_version, $arch );
     die sprintf('could not setup %s', $os_text) unless $virt;
-    $config->{$os_text} = $virt->as_hashref;
+    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    $config->{$identify_str} = $virt->as_hashref;
     Testament::Config->save($config);
     return 1;
 }

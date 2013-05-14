@@ -66,7 +66,7 @@ sub check_install_image {
     my $digest_file = File::Spec->catfile($vmdir, 'SHA256');
     my $install_image = File::Spec->catfile($vmdir, $isofile);
     unless ( -e $install_image ) {
-        critf('install image file %s is not found', $install_image);
+        warnf('install image file %s is not found', $install_image);
         return;
     }
     my $mirror = $class->opt_mirror;
