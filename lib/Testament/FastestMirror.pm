@@ -12,7 +12,7 @@ our @IPCHECKER_URL_LIST = (
 
 sub ip_checker_url {
     my $class = shift;
-    return $IPCHECKER_URL_LIST[int(rand($#IPCHECKER_URL_LIST + 1)];
+    return $IPCHECKER_URL_LIST[int(rand($#IPCHECKER_URL_LIST + 1))];
 }
 
 sub pickup {
