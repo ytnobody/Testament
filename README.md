@@ -1,6 +1,6 @@
 # NAME
 
-Testament - A testing environment builder tool
+Testament - TEST AssignMENT
 
 # SYNOPSIS
 
