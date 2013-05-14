@@ -1,5 +1,5 @@
 {
-   "abstract" : "A testing environment builder tool",
+   "abstract" : "TEST AssignMENT",
    "author" : [
       "ytnobody <>"
    ],
@@ -48,7 +48,13 @@
       },
       "runtime" : {
          "requires" : {
-            "LWP::UserAgent" : "0",
+            "Class::Load" : "0",
+            "Digest::SHA2" : "0",
+            "File::Which" : "0",
+            "Furl" : "2.10",
+            "IP::Country" : "0",
+            "JSON" : "0",
+            "List::Util" : "0",
             "Log::Minimal" : "0",
             "Net::EmptyPort" : "0",
             "perl" : "5.008005"
@@ -69,7 +75,7 @@
    },
    "version" : "0.01",
    "x_contributors" : [
-      "ytnobody <ytnobody@gmail.com>",
-      "moznion <moznion@gmail.com>"
+      "moznion <moznion@gmail.com>",
+      "ytnobody <ytnobody@gmail.com>"
    ]
 }
