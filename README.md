@@ -13,7 +13,7 @@ To show failure report for your module,
 
 And, you can create virtual environment
 
-    $ testament create OpenBSD 5.1 OpenBSD.i386-openbsd 
+    $ testament create OpenBSD 5.1 OpenBSD.i386-openbsd
 
 # DESCRIPTION
 
