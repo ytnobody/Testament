@@ -4,7 +4,7 @@ Testament - TEST AssignMENT
 
 # SYNOPSIS
 
-    $ ament Your::Module --perl 5.14.2 --os openbsd-5.2-i386
+    $ testament Your::Module --perl 5.14.2 --os openbsd-5.2-i386
 
 # DESCRIPTION
 
