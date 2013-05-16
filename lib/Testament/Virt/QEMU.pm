@@ -7,15 +7,16 @@ use Log::Minimal;
 sub boot {
     my ($class, $virt) = @_;
     my $bin = which('qemu-system-'.$virt->arch);
-    my %options = (
-        '-hda'   => $virt->hda,
-        '-redir' => sprintf('tcp:%d::22', $virt->ssh_port),
+    my @options = (
+        '-m'       => $virt->ram,
+        '-hda'     => $virt->hda,
+        '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
     );
     if ( $virt->cdrom ) {
-        $options{'-cdrom'} = $virt->cdrom;
-        $options{'-boot'}  = 'd';
+        push @options, ('-cdrom' => $virt->cdrom);
+        push @options, ('-boot'  => 'd');
     }
-    my $cmd = join(' ', $bin, map {($_ => $options{$_})} keys %options);
+    my $cmd = join(' ', $bin, @options);
     `$cmd`;
 }
 
