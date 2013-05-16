@@ -1,10 +1,10 @@
 {
    "abstract" : "TEST AssignMENT",
    "author" : [
-      "ytnobody <>"
+      "ytnobody <ytnobody aaaaatttttt gmail>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.4.2, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Minilla/v0.4.2, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -76,6 +76,6 @@
    "version" : "0.01",
    "x_contributors" : [
       "moznion <moznion@gmail.com>",
-      "ytnobody <ytnobody@gmail.com>"
+      "ytnobody / satoshi azuma <ytnobody@gmail.com>"
    ]
 }
