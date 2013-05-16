@@ -12,7 +12,8 @@ my $config = Testament::Config->load;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
-    my $virt = Testament::Setup->setup( $os_text, $os_version, $arch );
+    my $setup = Testament::Setup->new( os_text => $os_text, os_version => $os_version, arch => $arch );
+    my $virt = $setup->do_setup;
     die sprintf('could not setup %s', $os_text) unless $virt;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
     $config->{$identify_str} = $virt->as_hashref;

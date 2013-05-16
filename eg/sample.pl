@@ -7,4 +7,4 @@ use lib (File::Spec->catdir(dirname(__FILE__), '..', 'lib'));
 
 use Testament;
 
-Testament->setup('OpenBSD','5.2','i386');
+Testament->setup('OpenBSD','5.2','OpenBSD.i386-openbsd');

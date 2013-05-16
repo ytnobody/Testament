@@ -23,6 +23,7 @@ sub get {
 
 sub wget {
     my ($class, $url, $saveto) = @_;
+    infof('WGETing %s', $url);
     if( my $code = system("wget $url --output-document=$saveto") ) {
         critf('failed to fetching : exit code = %s', $code);
         die;
