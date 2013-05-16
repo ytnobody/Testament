@@ -2,6 +2,7 @@ package Testament::Setup;
 use strict;
 use warnings;
 use Testament::Util;
+use Testament::URLFetcher;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
@@ -23,4 +24,10 @@ sub submodule {
     $submod;
 }
 
+sub fetch_mirrors {
+    my ( $class, $mirrors_list_url ) = @_;
+    my $res = Testament::URLFetcher->get($mirrors_list_url);
+    ( my @mirrors ) = $res =~ /href\=\"(ftp:\/\/.+?)\"/g;
+    return @mirrors;
+}
 1;
