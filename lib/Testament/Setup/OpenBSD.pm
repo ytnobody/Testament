@@ -5,24 +5,18 @@ use Testament::URLFetcher;
 use Testament::Util;
 use Testament::FastestMirror;
 use Testament::Virt;
+use Testament::Setup;
 use File::Spec;
 use Log::Minimal;
 use Digest::SHA2;
 
-our @MIRRORS;
-
-sub mirrors {
-    my $class = shift;
-    return @MIRRORS if @MIRRORS;
-    my $res = Testament::URLFetcher->get('http://www.openbsd.org/ftp.html');
-    @MIRRORS = $res =~ /href\=\"(ftp:\/\/.+?)\"/g;
-    return @MIRRORS;
-}
+my @MIRRORS;
 
 sub opt_mirror {
-    my $class = shift;
-    my @mirrors = $class->mirrors;
-    return Testament::FastestMirror->pickup(@mirrors);
+    my $class           = shift;
+    my $mirror_list_url = 'http://www.openbsd.org/ftp.html';
+    @MIRRORS or @MIRRORS = Testament::Setup->fetch_mirrors($mirror_list_url);
+    return Testament::FastestMirror->pickup(@MIRRORS);
 }
 
 sub install {
