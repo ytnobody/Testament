@@ -16,10 +16,20 @@ sub ip_checker_url {
 }
 
 sub pickup {
-    my ($class, @urllist) = @_;
+    my ($class, $urllist, $country_matcher ) = @_;
     my $ipinfo = JSON->new->utf8->decode(Testament::URLFetcher->get($class->ip_checker_url));
     my $my_country = uc($ipinfo->{country});
-    my @near_url = grep {uc($_->host) =~ /\.$my_country$/} map {URI->new($_)} @urllist;
+
+    $country_matcher ||= sub {
+        my $country = shift;
+        qr/\.$country$/;
+    };
+
+    my $country_filter = sub {
+        my ( $host, $contry ) = @_;
+        uc($host) =~ &$country_matcher($contry);
+    };
+    my @near_url = grep {&$country_filter($_->host, $my_country)} map {URI->new($_)} @{$urllist};
     return $near_url[int(rand($#near_url + 1))];
 }
 

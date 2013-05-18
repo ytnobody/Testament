@@ -24,7 +24,7 @@ sub new {
     require File::Spec->catfile(split('::', $params{submodule}. '.pm'));
 
     $params{mirrors} = [ _fetch_mirrors($params{submodule}->mirror_list_url) ];
-    bless {%params}, $class; 
+    bless {%params}, $class;
 }
 
 sub do_setup {
@@ -34,8 +34,8 @@ sub do_setup {
 }
 
 sub mirror {
-    my $self = shift;
-    return Testament::FastestMirror->pickup(@{$self->mirrors});
+    my ( $self, $country_matcher ) = @_;
+    return Testament::FastestMirror->pickup( $self->mirrors, $country_matcher );
 }
 
 sub _fetch_mirrors {

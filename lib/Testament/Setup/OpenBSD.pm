@@ -84,8 +84,15 @@ sub file_sha256 {
 }
 
 sub remote_file_url {
-    my ($class, $setup, $arch, $filename) = @_;
-    return sprintf("%s/%s/%s/%s", $setup->mirror, $setup->os_version, $arch, $filename);
+    my ( $class, $setup, $arch, $filename ) = @_;
+
+    my $country_matcher = sub {
+        my $country = shift;
+        qr/\.$country$/;
+    };
+    return sprintf( "%s/%s/%s/%s",
+        $setup->mirror($country_matcher),
+        $setup->os_version, $arch, $filename );
 }
 
 1;
