@@ -30,6 +30,7 @@ sub pickup {
         uc($host) =~ &$country_matcher($contry);
     };
     my @near_url = grep {&$country_filter($_->host, $my_country)} map {URI->new($_)} @{$urllist};
+    return $urllist->[0] unless @near_url; # It's alright?
     return $near_url[int(rand($#near_url + 1))];
 }
 
