@@ -6,7 +6,10 @@ use Log::Minimal;
 
 sub boot {
     my ($class, $virt) = @_;
-    my $bin = which('qemu-system-'.$virt->arch);
+
+    my $arch = $virt->arch;
+    $arch =~ s/amd64/x86_64/;
+    my $bin = which('qemu-system-'.$arch);
     my @options = (
         '-m'       => $virt->ram,
         '-hda'     => $virt->hda,
