@@ -1,36 +1,74 @@
 package Testament::Setup;
 use strict;
 use warnings;
+use Log::Minimal;
+use Digest::SHA2;
 use Testament::Util;
 use Testament::URLFetcher;
 use Testament::FastestMirror;
 use Class::Accessor::Lite (
     new => 0,
-    ro => [
-        qw[os_text os_version arch],          # required
-        qw[vmdir identity submodule mirrors], # non-required
+    ro  => [
+        qw[os_text os_version arch],             # required
+        qw[vmdir identity submodule mirrors],    # non-required
+    ],
+    rw => [
+        qw[iso_file digest_file_name remote_url_builder arch_short arch_opt ],
     ],
 );
 
 sub new {
-    my ($class, %params) = @_;
+    my ( $class, %params ) = @_;
     for my $key (qw/os_text os_version arch/) {
         die "not allowed empty value for $key" unless $params{$key};
     }
-    $params{identity}  = Testament::Util->box_identity(@params{qw/os_text os_version arch/});
-    $params{vmdir}     = Testament::Util->vmdir($params{identity});
-    $params{submodule} = $class.'::'.$params{os_text};
+    $params{identity} =
+      Testament::Util->box_identity( @params{qw/os_text os_version arch/} );
+    $params{vmdir}     = Testament::Util->vmdir( $params{identity} );
+    $params{submodule} = $class . '::' . $params{os_text};
 
-    require File::Spec->catfile(split('::', $params{submodule}. '.pm'));
+    require File::Spec->catfile( split( '::', $params{submodule} . '.pm' ) );
 
-    $params{mirrors} = [ _fetch_mirrors($params{submodule}->mirror_list_url) ];
+    $params{mirrors} =
+      [ _fetch_mirrors( $params{submodule}->mirror_list_url ) ];
     bless {%params}, $class;
 }
 
 sub do_setup {
     my $self = shift;
-    Testament::Util->mkdir($self->vmdir);
-    return $self->submodule->install( $self );
+    Testament::Util->mkdir( $self->vmdir );
+    return $self->submodule->install($self);
+}
+
+sub install {
+    my ( $self, $arch_matcher, $iso_file_builder, $digest_file_name,
+        $remote_url_builder )
+      = @_;
+
+    # arch_short: e.g. "i386", "amd64", etc...
+    # arch_opt:   e.g. "thread-multi", "int64", etc...
+    my ( $arch_short, $arch_opt ) = $self->arch =~ $arch_matcher;
+    $self->arch_short($arch_short);
+    $self->arch_opt($arch_opt);
+    $self->digest_file_name($digest_file_name);
+    $self->remote_url_builder($remote_url_builder);
+    $self->iso_file( &$iso_file_builder($self) );
+
+    my $virt = Testament::Virt->new( arch => $self->arch_short );
+    my $install_image = $self->_fetch_install_image();
+    if ($install_image) {
+        my $hda = File::Spec->catfile( $self->vmdir, 'hda.img' );
+        $virt->create_image($hda);
+        $virt->hda($hda);
+        $virt->cdrom($install_image);
+        $virt->boot('d');
+        $virt->{cdrom} = undef;
+        return $virt;
+    }
+    else {
+        critf('install image file is illegal');
+        die;
+    }
 }
 
 sub mirror {
@@ -40,9 +78,77 @@ sub mirror {
 
 sub _fetch_mirrors {
     my $mirrors_list_url = shift;
-    my $res = Testament::URLFetcher->get($mirrors_list_url);
+    my $res              = Testament::URLFetcher->get($mirrors_list_url);
     ( my @mirrors ) = $res =~ /href\=\"(ftp:\/\/.+?)\"/g;
     return @mirrors;
 }
 
+sub _fetch_install_image {
+    my ($self) = @_;
+
+    my $install_image = File::Spec->catfile( $self->vmdir, $self->iso_file );
+    unless ( $self->_validate_install_image() ) {
+        my $url = &{ $self->remote_url_builder }( $self, $self->iso_file );
+        Testament::URLFetcher->wget( $url, $install_image );
+        return unless $self->_validate_install_image();
+    }
+    return $install_image;
+}
+
+sub _validate_install_image {
+    my ($self) = @_;
+
+    my $digest_file =
+      File::Spec->catfile( $self->vmdir, $self->digest_file_name );
+    my $url = &{ $self->remote_url_builder }( $self, $self->digest_file_name );
+    Testament::URLFetcher->wget( $url, $digest_file );
+    my $install_image = $self->_get_downloaded_img_path();
+
+    return unless $install_image;
+    return $self->_validate_img_file_by_sha256( $install_image, $digest_file );
+}
+
+sub _calculate_sha256_of_file {
+    my ( $self, $path ) = @_;
+
+    infof( 'checking sha256 digest for file %s', $path );
+    my $fh;
+    unless ( open $fh, '<', $path ) {
+        critf( 'could not open file %s', $path );
+    }
+    my $sha2obj = Digest::SHA2->new;
+    $sha2obj->addfile($fh);
+    my $sha256 = $sha2obj->hexdigest;
+    infof( 'sha256 = %s', $sha256 );
+    close $fh;
+
+    return $sha256;
+}
+
+sub _validate_img_file_by_sha256 {
+    my ( $self, $install_image, $digest_file ) = @_;
+
+    my $filename = my $sha256 = undef;
+    for my $line ( split /\n/, Testament::Util->file_slurp($digest_file) ) {
+        chomp $line;
+        ( $filename, $sha256 ) = $line =~ /^SHA256 \((.+)\) = ([0-9a-f]+)$/;
+        last if $filename eq $self->iso_file;
+    }
+    unless ( $sha256 eq $self->_calculate_sha256_of_file($install_image) ) {
+        critf( 'sha256 digest is not match : wants = %s', $sha256 );
+        return;
+    }
+    return $install_image;
+}
+
+sub _get_downloaded_img_path {
+    my ($self) = @_;
+    my $install_image = File::Spec->catfile( $self->vmdir, $self->iso_file );
+    unless ( -e $install_image ) {
+        warnf( 'install image file %s is not found', $install_image );
+        return;
+    }
+
+    return $install_image;
+}
 1;
