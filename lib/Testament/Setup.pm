@@ -42,8 +42,7 @@ sub do_setup {
 
 sub install {
     my ( $self, $arch_matcher, $iso_file_builder, $digest_file_name,
-        $remote_url_builder )
-      = @_;
+        $remote_url_builder ) = @_;
 
     # arch_short: e.g. "i386", "amd64", etc...
     # arch_opt:   e.g. "thread-multi", "int64", etc...
@@ -72,8 +71,13 @@ sub install {
 }
 
 sub mirror {
-    my ( $self, $country_matcher ) = @_;
-    return Testament::FastestMirror->pickup( $self->mirrors, $country_matcher );
+    my ( $self, $country_matcher, $mirror_regexp ) = @_;
+
+    my @mirrors =
+      $mirror_regexp
+      ? grep { $_ =~ $mirror_regexp } @{ $self->mirrors }
+      : @{ $self->mirrors };
+    return Testament::FastestMirror->pickup( \@mirrors, $country_matcher );
 }
 
 sub _fetch_mirrors {
@@ -105,40 +109,40 @@ sub _validate_install_image {
     my $install_image = $self->_get_downloaded_img_path();
 
     return unless $install_image;
-    return $self->_validate_img_file_by_sha256( $install_image, $digest_file );
+    return $self->_validate_img_file_by_SHA2( $install_image, $digest_file );
 }
 
-sub _calculate_sha256_of_file {
-    my ( $self, $path ) = @_;
+sub _validate_img_file_by_SHA2 {
+    my ( $self, $install_image, $digest_file ) = @_;
 
-    infof( 'checking sha256 digest for file %s', $path );
+    my $sha_type = my $filename = my $sha2 = undef;
+    for my $line ( split /\n/, Testament::Util->file_slurp($digest_file) ) {
+        chomp $line;
+        ( $sha_type, $filename, $sha2 ) = $line =~ /^SHA(\d\d\d) \((.+)\) = ([0-9a-f]+)$/;
+        last if $filename eq $self->iso_file;
+    }
+    unless ( $sha2 eq $self->_calculate_SHA2_of_file($install_image, $sha_type) ) {
+        critf( 'sha%s digest is not match : wants = %s', $sha_type, $sha2 );
+        return;
+    }
+    return $install_image;
+}
+
+sub _calculate_SHA2_of_file {
+    my ( $self, $path, $sha_type ) = @_;
+
+    infof( 'checking sha%s digest for file %s', $sha_type, $path );
     my $fh;
     unless ( open $fh, '<', $path ) {
         critf( 'could not open file %s', $path );
     }
-    my $sha2obj = Digest::SHA2->new;
+    my $sha2obj = Digest::SHA2->new($sha_type);
     $sha2obj->addfile($fh);
-    my $sha256 = $sha2obj->hexdigest;
-    infof( 'sha256 = %s', $sha256 );
+    my $sha2 = $sha2obj->hexdigest;
+    infof( 'sha%s = %s', $sha_type, $sha2 );
     close $fh;
 
-    return $sha256;
-}
-
-sub _validate_img_file_by_sha256 {
-    my ( $self, $install_image, $digest_file ) = @_;
-
-    my $filename = my $sha256 = undef;
-    for my $line ( split /\n/, Testament::Util->file_slurp($digest_file) ) {
-        chomp $line;
-        ( $filename, $sha256 ) = $line =~ /^SHA256 \((.+)\) = ([0-9a-f]+)$/;
-        last if $filename eq $self->iso_file;
-    }
-    unless ( $sha256 eq $self->_calculate_sha256_of_file($install_image) ) {
-        critf( 'sha256 digest is not match : wants = %s', $sha256 );
-        return;
-    }
-    return $install_image;
+    return $sha2;
 }
 
 sub _get_downloaded_img_path {
