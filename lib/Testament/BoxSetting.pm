@@ -8,7 +8,7 @@ use JSON;
 use List::Util qw/first/;
 
 use constant SUCCESS_CODE => 200;
-use constant SUPPORTED_OS => ( 'OpenBSD', 'FreeBSD', 'GNU/Linux' );    # TODO
+use constant SUPPORTED_OS => ( 'OpenBSD', 'FreeBSD', 'NetBSD', 'GNU/Linux' );    # TODO
 
 sub fetch_box_setting {
     my ( $distro, $version ) = @_;
