@@ -14,6 +14,9 @@ sub boot {
         '-m'       => $virt->ram,
         '-hda'     => $virt->hda,
         '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
+        '-serial'  => sprintf('telnet:127.0.0.1:%d', $virt->serial_port),
+        '-monitor' => 'stdio',
+        '-nographic',
     );
     if ( $virt->cdrom ) {
         push @options, ('-cdrom' => $virt->cdrom);
@@ -21,6 +24,7 @@ sub boot {
     }
     my $cmd = join(' ', $bin, @options);
     `$cmd`;
+    ### XXX want to send 'set tty com0\n' at here.
 }
 
 sub create_image {
