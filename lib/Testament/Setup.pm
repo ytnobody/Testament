@@ -6,6 +6,7 @@ use Digest::SHA2;
 use Testament::Util;
 use Testament::URLFetcher;
 use Testament::FastestMirror;
+use Testament::Virt;
 use Class::Accessor::Lite (
     new => 0,
     ro  => [

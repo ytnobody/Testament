@@ -1,6 +1,12 @@
 package Testament::Virt::QEMU::Monitor;
 use strict;
 use warnings;
+use Expect;
+use Class::Accessor::Lite (
+    new => 1,
+    ro => [qw[boot_cmd]],
+    rw => [qw[spawn]],
+);
 
 our %METAMAP = (
     '\s' => 'shift',         '\S' => 'shift_r',
@@ -40,6 +46,10 @@ our %METAMAP = (
 );
 
 our $META_CHAR_REGEXP = qr/(_\\)/;
+
+sub boot {
+    my $class = shift;
+}
 
 sub sendkey {
     my ($class, $key) = @_;

@@ -3,10 +3,16 @@ use strict;
 use warnings;
 use File::Which 'which';
 use Log::Minimal;
+use Class::Accessor::Lite (
+    ro => [qw[virt]],
+    rw => [qw[monitor console]],
+);
+use Testament::Virt::QEMU::Monitor;
 
 sub boot {
-    my ($class, $virt) = @_;
-
+    my ($self, $boot_opt) = @_;
+    @boot_opt ||= 'set tty com0';
+    my $virt = $self->virt;
     my $arch = $virt->arch;
     $arch =~ s/amd64/x86_64/;
     my $bin = which('qemu-system-'.$arch);
@@ -22,9 +28,8 @@ sub boot {
         push @options, ('-cdrom' => $virt->cdrom);
         push @options, ('-boot'  => 'd');
     }
-    my $cmd = join(' ', $bin, @options);
-    `$cmd`;
-    ### XXX want to send 'set tty com0\n' at here.
+    $self->monitor(Testament::Virt::QEMU::Monitor->new(bootcmd => join(' ', $bin, @options)));
+    $self->monitor->boot($boot_opt);
 }
 
 sub create_image {
