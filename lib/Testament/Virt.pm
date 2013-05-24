@@ -18,7 +18,7 @@ sub boot {
         $self->ram($ENV{TESTAMENT_VM_RAM} || 256);
     }
     infof('BOOT hda:%s ram:%sMBytes ssh_port:%d', $self->hda, $self->ram, $self->ssh_port);
-    my $vm = $subclass->new($self);
+    my $vm = $subclass->new(virt => $self);
     $vm->boot($boot_opt);
 }
 

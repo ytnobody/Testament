@@ -4,6 +4,7 @@ use warnings;
 use File::Which 'which';
 use Log::Minimal;
 use Class::Accessor::Lite (
+    new => 1,
     ro => [qw[virt]],
     rw => [qw[monitor console]],
 );
@@ -11,7 +12,7 @@ use Testament::Virt::QEMU::Monitor;
 
 sub boot {
     my ($self, $boot_opt) = @_;
-    @boot_opt ||= 'set tty com0';
+    $boot_opt ||= 'set tty com0';
     my $virt = $self->virt;
     my $arch = $virt->arch;
     $arch =~ s/amd64/x86_64/;
@@ -20,7 +21,7 @@ sub boot {
         '-m'       => $virt->ram,
         '-hda'     => $virt->hda,
         '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
-        '-serial'  => sprintf('telnet:127.0.0.1:%d', $virt->serial_port),
+        '-serial'  => sprintf('telnet:127.0.0.1:%d,server,nowait', $virt->serial_port),
         '-monitor' => 'stdio',
         '-nographic',
     );
@@ -28,7 +29,7 @@ sub boot {
         push @options, ('-cdrom' => $virt->cdrom);
         push @options, ('-boot'  => 'd');
     }
-    $self->monitor(Testament::Virt::QEMU::Monitor->new(bootcmd => join(' ', $bin, @options)));
+    $self->monitor(Testament::Virt::QEMU::Monitor->new(boot_cmd => [$bin, @options]));
     $self->monitor->boot($boot_opt);
 }
 

@@ -5,7 +5,7 @@ use Expect;
 use Class::Accessor::Lite (
     new => 1,
     ro => [qw[boot_cmd]],
-    rw => [qw[spawn]],
+    rw => [qw[spawn boot_wait]],
 );
 
 our %METAMAP = (
@@ -48,17 +48,34 @@ our %METAMAP = (
 our $META_CHAR_REGEXP = qr/(_\\)/;
 
 sub boot {
-    my $class = shift;
+    my ($self, $boot_opt) = @_;
+    my $boot_wait = $self->boot_wait || 10;
+    my $spawn = Expect->spawn(@{$self->boot_cmd}, $boot_opt) or die sprintf('%s [CMD=%s BOOT_OPTION=%s]', $!, $self->boot_cmd, $boot_opt);
+    $self->spawn($spawn);
+    sleep $boot_wait;
+    $self->type($boot_opt);
 }
 
 sub sendkey {
-    my ($class, $key) = @_;
-    ...
+    my ($self, $key) = @_;
+    $self->spawn->send("sendkey $key\n") if length($key) > 0;
 }
 
 sub type {
-    my ($class, $str) = @_;
-    ...
+    my ($self, $str) = @_;
+    my @chars = split(//, $str);
+    my $key = '';
+    for my $char ( @chars ) {
+        if ($char =~ $META_CHAR_REGEXP) {
+            $key = $char;
+            next;
+        }
+        $key .= $char;
+        my $key = $METAMAP{$key} ? $METAMAP{$key} : $key;
+        $self->sendkey($key);
+        $key = '';
+    }
+    $self->sendkey('kp_enter');
 }
 
 1;

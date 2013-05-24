@@ -43,7 +43,9 @@ sub do_setup {
 
 sub install {
     my ( $self, $arch_matcher, $iso_file_builder, $digest_file_name,
-        $remote_url_builder ) = @_;
+        $remote_url_builder, $boot_opt ) = @_;
+
+    $boot_opt ||= '';
 
     # arch_short: e.g. "i386", "amd64", etc...
     # arch_opt:   e.g. "thread-multi", "int64", etc...
@@ -53,7 +55,6 @@ sub install {
     $self->digest_file_name($digest_file_name);
     $self->remote_url_builder($remote_url_builder);
     $self->iso_file( &$iso_file_builder($self) );
-
     my $virt = Testament::Virt->new( arch => $self->arch_short );
     my $install_image = $self->_fetch_install_image();
     if ($install_image) {
@@ -61,7 +62,7 @@ sub install {
         $virt->create_image($hda);
         $virt->hda($hda);
         $virt->cdrom($install_image);
-        $virt->boot('d');
+        $virt->boot();
         $virt->{cdrom} = undef;
         return $virt;
     }

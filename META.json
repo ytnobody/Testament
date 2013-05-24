@@ -51,6 +51,7 @@
          "requires" : {
             "Class::Load" : "0",
             "Digest::SHA2" : "0",
+            "Expect" : "0",
             "File::Which" : "0",
             "Furl" : "2.10",
             "JSON" : "0",
