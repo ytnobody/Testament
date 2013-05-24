@@ -11,8 +11,9 @@ use Class::Accessor::Lite (
 use Testament::Virt::QEMU::Monitor;
 
 sub boot {
-    my ($self, $boot_opt) = @_;
-    $boot_opt ||= 'set tty com0';
+    my ($self, %opts) = @_; 
+    my $boot_opt = $opts{boot_opt} || 'set tty com0';
+    my $boot_wait = $opts{boot_wait} || 10;
     my $virt = $self->virt;
     my $arch = $virt->arch;
     $arch =~ s/amd64/x86_64/;
@@ -29,7 +30,7 @@ sub boot {
         push @options, ('-cdrom' => $virt->cdrom);
         push @options, ('-boot'  => 'd');
     }
-    $self->monitor(Testament::Virt::QEMU::Monitor->new(boot_cmd => [$bin, @options]));
+    $self->monitor(Testament::Virt::QEMU::Monitor->new(boot_cmd => [$bin, @options], boot_wait => $boot_wait));
     $self->monitor->boot($boot_opt);
 }
 

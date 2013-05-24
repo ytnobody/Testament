@@ -1,6 +1,7 @@
 package Testament::Virt::QEMU::Monitor;
 use strict;
 use warnings;
+use Log::Minimal;
 use Expect;
 use Class::Accessor::Lite (
     new => 1,
@@ -58,6 +59,7 @@ sub boot {
 
 sub sendkey {
     my ($self, $key) = @_;
+    infof("sendkey %s", $key);
     $self->spawn->send("sendkey $key\n") if length($key) > 0;
 }
 
@@ -71,11 +73,12 @@ sub type {
             next;
         }
         $key .= $char;
-        my $key = $METAMAP{$key} ? $METAMAP{$key} : $key;
+        $key = $METAMAP{$key} ? $METAMAP{$key} : $key;
         $self->sendkey($key);
         $key = '';
     }
     $self->sendkey('kp_enter');
+    $self->spawn->interact;
 }
 
 1;

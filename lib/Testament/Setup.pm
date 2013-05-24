@@ -43,9 +43,10 @@ sub do_setup {
 
 sub install {
     my ( $self, $arch_matcher, $iso_file_builder, $digest_file_name,
-        $remote_url_builder, $boot_opt ) = @_;
+        $remote_url_builder, $boot_opt, $boot_wait ) = @_;
 
     $boot_opt ||= '';
+    $boot_wait ||= 10;
 
     # arch_short: e.g. "i386", "amd64", etc...
     # arch_opt:   e.g. "thread-multi", "int64", etc...
@@ -62,7 +63,7 @@ sub install {
         $virt->create_image($hda);
         $virt->hda($hda);
         $virt->cdrom($install_image);
-        $virt->boot();
+        $virt->boot($boot_opt, $boot_wait);
         $virt->{cdrom} = undef;
         return $virt;
     }

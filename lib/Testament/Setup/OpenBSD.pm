@@ -32,7 +32,7 @@ sub install {
     $setup->install(
         $arch_matcher,     $iso_file_builder,
         $digest_file_name, $remote_url_builder,
-        'set tty com0'
+        'set tty com0', 3
     );
 }
 1;

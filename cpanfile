@@ -8,6 +8,7 @@ requires 'List::Util', 0;
 requires 'Class::Load', 0;
 requires 'Furl', '2.10';
 requires 'Expect', 0;
+requires 'IO::Stty', 0;
 
 on 'build' => sub {
     requires 'Test::More', '0.98';

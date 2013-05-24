@@ -10,7 +10,8 @@ use Net::EmptyPort 'empty_port';
 use Log::Minimal;
 
 sub boot {
-    my ($self, $boot_opt) = @_;
+    my ($self, $boot_opt, $boot_wait) = @_;
+    $boot_wait ||= 10;
     my $subclass = $self->load_subclass;
     $self->ssh_port(empty_port());
     $self->serial_port(empty_port());
@@ -19,7 +20,7 @@ sub boot {
     }
     infof('BOOT hda:%s ram:%sMBytes ssh_port:%d', $self->hda, $self->ram, $self->ssh_port);
     my $vm = $subclass->new(virt => $self);
-    $vm->boot($boot_opt);
+    $vm->boot(boot_opt => $boot_opt, boot_wait => $boot_wait);
 }
 
 sub create_image {
