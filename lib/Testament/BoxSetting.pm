@@ -69,6 +69,9 @@ sub _filter_by_supported_os {
         my $fail_box = $_;
         grep { $_ eq $fail_box->{ostext} } SUPPORTED_OS;
     } @boxes;
+
+    # For Linux (GNU/Linux -> GNU_Linux)
+    @boxes = map { $_->{ostext} =~ s!/!_!; $_; } @boxes;
 }
 
 1;

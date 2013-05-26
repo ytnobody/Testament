@@ -12,6 +12,12 @@ my $config = Testament::Config->load;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
+
+    if ($os_text eq 'GNU_Linux') {
+        # TODO It's all right?
+        ($os_version) = $os_version =~ m/(.*?-.+?)(?:-.*)?/;
+    }
+
     my $setup = Testament::Setup->new( os_text => $os_text, os_version => $os_version, arch => $arch );
     my $virt = $setup->do_setup;
     die sprintf('could not setup %s', $os_text) unless $virt;
