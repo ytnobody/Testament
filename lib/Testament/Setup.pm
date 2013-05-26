@@ -46,7 +46,7 @@ sub install {
         $remote_url_builder, $boot_opt, $boot_wait ) = @_;
 
     $boot_opt ||= '';
-    $boot_wait ||= 10;
+    $boot_wait ||= 5;
 
     # arch_short: e.g. "i386", "amd64", etc...
     # arch_opt:   e.g. "thread-multi", "int64", etc...

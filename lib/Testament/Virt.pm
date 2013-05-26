@@ -4,17 +4,16 @@ use warnings;
 use Class::Load qw[load_class is_class_loaded];
 use Class::Accessor::Lite (
     new => 1,
-    rw => [qw[ subclass arch cdrom hda ssh_port serial_port ram ]],
+    rw => [qw[ subclass arch cdrom hda ssh_port ram ]],
 );
 use Net::EmptyPort 'empty_port';
 use Log::Minimal;
 
 sub boot {
     my ($self, $boot_opt, $boot_wait) = @_;
-    $boot_wait ||= 10;
+    $boot_wait ||= 1;
     my $subclass = $self->load_subclass;
     $self->ssh_port(empty_port());
-    $self->serial_port(empty_port());
     unless ($self->ram) {
         $self->ram($ENV{TESTAMENT_VM_RAM} || 256);
     }

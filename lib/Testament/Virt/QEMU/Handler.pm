@@ -1,12 +1,13 @@
-package Testament::Virt::QEMU::Monitor;
+package Testament::Virt::QEMU::Handler;
 use strict;
 use warnings;
 use Log::Minimal;
 use Expect;
+use Time::HiRes 'sleep';
 use Class::Accessor::Lite (
     new => 1,
-    ro => [qw[boot_cmd]],
-    rw => [qw[spawn boot_wait]],
+    ro => [qw[virt boot_cmd monitor_port console_port]],
+    rw => [qw[bootproc monitor console boot_wait]],
 );
 
 our %METAMAP = (
@@ -22,7 +23,7 @@ our %METAMAP = (
     '`'  => 'grave_accent',  '\\' => 'backslash',
     ','  => 'comma',         '.'  => 'dot',
     '/'  => 'slash',         '*'  => 'asterisk',
-    '\ ' => 'spc',           '\L' => 'caps_lock',
+    ' '  => 'spc',           '\L' => 'caps_lock',
     '\1' => 'f1',            '\2' => 'f2',
     '\3' => 'f3',            '\4' => 'f4',
     '\5' => 'f5',            '\6' => 'f6',
@@ -50,21 +51,43 @@ our $META_CHAR_REGEXP = qr/(_\\)/;
 
 sub boot {
     my ($self, $boot_opt) = @_;
-    my $boot_wait = $self->boot_wait || 10;
-    my $spawn = Expect->spawn(@{$self->boot_cmd}, $boot_opt) or die sprintf('%s [CMD=%s BOOT_OPTION=%s]', $!, $self->boot_cmd, $boot_opt);
-    $self->spawn($spawn);
+    my $boot_wait = $self->boot_wait || 5;
+    $self->bootproc(Expect->new);
+    $self->monitor(Expect->new);
+    $self->console(Expect->new);
+    infof("CMD=%s", join(' ',@{$self->boot_cmd}));
+    $self->bootproc->spawn(@{$self->boot_cmd}) or die sprintf('%s [CMD=%s BOOT_OPTION=%s]', $!, join(' ',@{$self->boot_cmd}), $boot_opt);
+    sleep 0.1;
+    $self->monitor->spawn('telnet', '127.0.0.1', $self->monitor_port);
+    sleep 0.1;
+    $self->console->spawn('telnet', '127.0.0.1', $self->console_port);
     sleep $boot_wait;
-    $self->type($boot_opt);
+    $self->type($boot_opt, $self->monitor);
+    $self->close($self->monitor);
+    $self->close($self->console);
+    $self->close($self->bootproc);
+}
+
+sub close {
+    my ($self, $target) = @_;
+    if ($target) {
+        $target->interact;
+        $target->soft_close;
+        return;
+    }
+    warnf('close: unspecified target');
 }
 
 sub sendkey {
-    my ($self, $key) = @_;
-    infof("sendkey %s", $key);
-    $self->spawn->send("sendkey $key\n") if length($key) > 0;
+    my ($self, $key, $target) = @_;
+    if (length($key) > 0) {
+        $target->send("sendkey $key\n");
+    }
 }
 
 sub type {
-    my ($self, $str) = @_;
+    my ($self, $str, $target) = @_;
+    $target ||= $self->console;
     my @chars = split(//, $str);
     my $key = '';
     for my $char ( @chars ) {
@@ -74,11 +97,10 @@ sub type {
         }
         $key .= $char;
         $key = $METAMAP{$key} ? $METAMAP{$key} : $key;
-        $self->sendkey($key);
+        $self->sendkey($key, $target);
         $key = '';
     }
-    $self->sendkey('kp_enter');
-    $self->spawn->interact;
+    $self->sendkey('kp_enter', $target);
 }
 
 1;
@@ -148,7 +170,7 @@ comma		,
 dot		.
 slash		/
 asterisk	*	
-spc		\ (backslash and real-space)
+spc		(backslash and real-space)
 caps_lock	\L
 f1		\1
 f2		\2

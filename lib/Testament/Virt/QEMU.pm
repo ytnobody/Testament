@@ -1,37 +1,59 @@
 package Testament::Virt::QEMU;
 use strict;
 use warnings;
+use Net::EmptyPort 'empty_port';
 use File::Which 'which';
 use Log::Minimal;
 use Class::Accessor::Lite (
     new => 1,
     ro => [qw[virt]],
-    rw => [qw[monitor console]],
+    rw => [qw[handler]],
 );
-use Testament::Virt::QEMU::Monitor;
+use Testament::Virt::QEMU::Handler;
 
 sub boot {
     my ($self, %opts) = @_; 
+
     my $boot_opt = $opts{boot_opt} || 'set tty com0';
-    my $boot_wait = $opts{boot_wait} || 10;
+    my $boot_wait = $opts{boot_wait};
     my $virt = $self->virt;
     my $arch = $virt->arch;
     $arch =~ s/amd64/x86_64/;
+
+    my $monitor_port = $self->new_port($virt->ssh_port);
+    my $console_port = $self->new_port($virt->ssh_port, $monitor_port);
+
     my $bin = which('qemu-system-'.$arch);
     my @options = (
         '-m'       => $virt->ram,
         '-hda'     => $virt->hda,
         '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
-        '-serial'  => sprintf('telnet:127.0.0.1:%d,server,nowait', $virt->serial_port),
-        '-monitor' => 'stdio',
+        '-serial'  => sprintf('telnet:127.0.0.1:%d,server,nowait', $console_port),
+        '-monitor' => sprintf('telnet:127.0.0.1:%d,server,nowait', $monitor_port), 
         '-nographic',
     );
     if ( $virt->cdrom ) {
         push @options, ('-cdrom' => $virt->cdrom);
         push @options, ('-boot'  => 'd');
     }
-    $self->monitor(Testament::Virt::QEMU::Monitor->new(boot_cmd => [$bin, @options], boot_wait => $boot_wait));
-    $self->monitor->boot($boot_opt);
+    
+    $self->handler(Testament::Virt::QEMU::Handler->new(
+        virt         => $virt, 
+        boot_cmd     => [$bin, @options], 
+        boot_wait    => $boot_wait,
+        monitor_port => $monitor_port,
+        console_port => $console_port,
+    ));
+    $self->handler->boot($boot_opt);
+}
+
+sub new_port {
+    my ($self, @ignore) = @_;
+    my $port;
+    while (1) {
+        $port = empty_port();
+        return $port unless grep {$_ == $port} @ignore;
+    }
 }
 
 sub create_image {
