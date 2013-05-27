@@ -109,7 +109,7 @@ sub _validate_install_image {
     my $digest_file =
       File::Spec->catfile( $self->vmdir, $self->digest_file_name );
     my $url = &{ $self->remote_url_builder }( $self, $self->digest_file_name );
-    Testament::URLFetcher->wget( $url, $digest_file );
+    Testament::URLFetcher->wget( $url, $digest_file ) unless -e $digest_file;
     my $install_image = $self->_get_downloaded_img_path();
 
     return unless $install_image;
