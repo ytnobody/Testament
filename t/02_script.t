@@ -55,7 +55,7 @@ subtest 'Fetch and show boxes that failure testing' => sub {
 
     subtest 'not specify version' => sub {
         my $got = $fetch_failures->(('failures', 'Testament::Test::Sandbox'));
-        like $got, qr!0\.01 perl-5\.8\.9 OpenBSD 5\.3 OpenBSD.i386-openbsd-thread-multi\n0\.02 perl-5\.10\.0 GNU/Linux 3\.2\.0-4-amd64 x86_64-linux-thread-multi!;
+        like $got, qr!0\.01 perl-5\.8\.9 OpenBSD 5\.3 OpenBSD.i386-openbsd-thread-multi\n0\.02 perl-5\.10\.0 GNU_Linux 3\.2\.0-4-amd64 x86_64-linux-thread-multi!;
     };
 
     subtest 'specify version by v0.01' => sub {
