@@ -52,23 +52,22 @@ our $META_CHAR_REGEXP = qr/(_\\)/;
 sub boot {
     my ($self, $boot_opt) = @_;
     my $boot_wait = $self->boot_wait || 5;
-    $self->bootproc(Expect->new);
     $self->monitor(Expect->new);
     $self->console(Expect->new);
     infof("CMD=%s", join(' ',@{$self->boot_cmd}));
-    $self->bootproc->spawn(@{$self->boot_cmd}) or die sprintf('%s [CMD=%s BOOT_OPTION=%s]', $!, join(' ',@{$self->boot_cmd}), $boot_opt);
-    sleep 0.1;
+    $self->bootproc(system(join(' ',@{$self->boot_cmd}, '&')));
+    sleep 0.5;
     $self->monitor->spawn('telnet', '127.0.0.1', $self->monitor_port);
-    sleep 0.1;
+    sleep 0.5;
     $self->console->spawn('telnet', '127.0.0.1', $self->console_port);
     sleep $boot_wait;
     $self->type($boot_opt, $self->monitor);
-    $self->close($self->monitor);
-    $self->close($self->console);
-    $self->close($self->bootproc);
+    $self->monitor->send("");
+    $self->monitor->send("quit\n");
+    $self->release($self->console);
 }
 
-sub close {
+sub release {
     my ($self, $target) = @_;
     if ($target) {
         $target->interact;
