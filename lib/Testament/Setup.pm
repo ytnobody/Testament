@@ -1,6 +1,7 @@
 package Testament::Setup;
 use strict;
 use warnings;
+use File::Basename qw(basename);
 use Log::Minimal;
 use Digest::SHA2;
 use Testament::Util;
@@ -118,10 +119,16 @@ sub _validate_install_image {
 sub _validate_img_file_by_SHA2 {
     my ( $self, $install_image, $digest_file ) = @_;
 
-    my $sha_type = my $filename = my $sha2 = undef;
+    my ( $sha_type, $filename, $sha2 );
     for my $line ( split /\n/, Testament::Util->file_slurp($digest_file) ) {
         chomp $line;
+        $sha_type = $filename = $sha2 = undef;
         ( $sha_type, $filename, $sha2 ) = $line =~ /^SHA(\d\d\d) \((.+)\) = ([0-9a-f]+)$/;
+        unless ($filename) {
+            # NOTE For Linux (Ubuntu). I think that this way is a little evil...
+            ( $sha2, $filename ) = $line =~ /([0-9a-f]+)\s*\*(.+)/;
+            ($sha_type) = basename($digest_file) =~ /(\d\d\d)/;
+        }
         last if $filename eq $self->iso_file;
     }
     unless ( $sha2 eq $self->_calculate_SHA2_of_file($install_image, $sha_type) ) {
