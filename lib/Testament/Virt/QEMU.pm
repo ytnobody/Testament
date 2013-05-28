@@ -9,7 +9,6 @@ use Class::Accessor::Lite (
     ro => [qw[virt]],
     rw => [qw[handler]],
 );
-use Testament::Virt::QEMU::Handler;
 
 sub boot {
     my ($self, %opts) = @_; 
@@ -28,23 +27,12 @@ sub boot {
         '-m'       => $virt->ram,
         '-hda'     => $virt->hda,
         '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
-        '-serial'  => sprintf('telnet:127.0.0.1:%d,server,nowait', $console_port),
-        '-monitor' => sprintf('telnet:127.0.0.1:%d,server,nowait', $monitor_port), 
-        '-nographic',
     );
     if ( $virt->cdrom ) {
         push @options, ('-cdrom' => $virt->cdrom);
         push @options, ('-boot'  => 'd');
     }
-    
-    $self->handler(Testament::Virt::QEMU::Handler->new(
-        virt         => $virt, 
-        boot_cmd     => [$bin, @options], 
-        boot_wait    => $boot_wait,
-        monitor_port => $monitor_port,
-        console_port => $console_port,
-    ));
-    $self->handler->boot($boot_opt);
+    system($bin, @options);   
 }
 
 sub new_port {
