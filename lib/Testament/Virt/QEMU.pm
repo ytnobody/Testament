@@ -27,10 +27,11 @@ sub boot {
         '-m'       => $virt->ram,
         '-hda'     => $virt->hda,
         '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
+        '-serial'  => 'stdio',
     );
     if ( $virt->cdrom ) {
         push @options, ('-cdrom' => $virt->cdrom);
-        push @options, ('-boot'  => 'd');
+        push @options, ('-boot'  => 'once=d');
     }
     system($bin, @options);   
 }
