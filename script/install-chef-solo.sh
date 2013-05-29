@@ -15,7 +15,7 @@ if [ $(whoami) != "root" ]; then
     die "exec by super-user"
 fi
 
-if [ -z "$PKG_ADD" && -z "$APT_GET" ]; then
+if [ -z "$PKG_ADD" ] && [ -z "$APT_GET" ]; then
     die "apt-get and pkg_add not found"
 fi
 
