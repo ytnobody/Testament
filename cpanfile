@@ -10,6 +10,7 @@ requires 'Furl', '2.10';
 requires 'Expect', 0;
 requires 'IO::Stty', 0;
 requires 'Time::HiRes', 0;
+requires 'URI', 0;
 
 on 'build' => sub {
     requires 'Test::More', '0.98';
