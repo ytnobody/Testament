@@ -22,6 +22,13 @@ fi
 if [ -z "$GEM" ]; then 
     if [ ! -z "$PKG_ADD" ]; then
         $PKG_ADD ruby-gems
+        ln -sfv /usr/local/bin/ruby18 /usr/local/bin/ruby
+        ln -sfv /usr/local/bin/erb18 /usr/local/bin/erb
+        ln -sfv /usr/local/bin/irb18 /usr/local/bin/irb
+        ln -sfv /usr/local/bin/rdoc18 /usr/local/bin/rdoc
+        ln -sfv /usr/local/bin/ri18 /usr/local/bin/ri
+        ln -sfv /usr/local/bin/testrb18 /usr/local/bin/testrb
+        ln -sfv /usr/local/bin/gem18 /usr/local/bin/gem
     elif [ ! -z "$APT_GET" ]; then
         $APT_GET install ruby rubygems
     fi
