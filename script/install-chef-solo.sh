@@ -21,15 +21,15 @@ fi
 
 if [ -z "$GEM" ]; then 
     if [ ! -z "$PKG_ADD" ]; then
-        $PKG_ADD ruby
+        $PKG_ADD ruby-gems
     elif [ ! -z "$APT_GET" ]; then
-        $APT_GET install ruby 
+        $APT_GET install ruby rubygems
     fi
     GEM=$(which gem)
 fi
 
 if [ -z "$GEM" ]; then
-    die "failure to install ruby"
+    die "failure to install rubygems"
 fi
 
 if [ -z "$CHEF" ] ; then
