@@ -28,6 +28,10 @@ if [ -z "$GEM" ]; then
     GEM=$(which gem)
 fi
 
+if [ -z "$GEM" ]; then
+    die "failure to install ruby"
+fi
+
 if [ -z "$CHEF" ] ; then
     $GEM i chef --no-ri --no-rdoc
     CHEF=$(which chef)
