@@ -27,7 +27,8 @@ sub boot {
         '-m'       => $virt->ram,
         '-hda'     => $virt->hda,
         '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
-        '-serial'  => 'stdio',
+        '-serial'  => 'null',
+        '-monitor' => 'stdio',
     );
     if ( $virt->cdrom ) {
         push @options, ('-cdrom' => $virt->cdrom);

@@ -59,7 +59,9 @@
             "List::Util" : "0",
             "Log::Minimal" : "0",
             "Net::EmptyPort" : "0",
+            "Proc::Simple" : "0",
             "Time::HiRes" : "0",
+            "URI" : "0",
             "perl" : "5.008005"
          }
       }
@@ -79,6 +81,8 @@
    "version" : "0.01",
    "x_contributors" : [
       "moznion <moznion@gmail.com>",
+      "ichigotake <k.wisiiy@gmail.com>",
+      "root <root@ubuntu.(none)>",
       "ytnobody <ytnobody@gmail.com>"
    ]
 }

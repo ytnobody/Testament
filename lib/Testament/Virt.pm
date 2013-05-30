@@ -4,10 +4,11 @@ use warnings;
 use Class::Load qw[load_class is_class_loaded];
 use Class::Accessor::Lite (
     new => 1,
-    rw => [qw[ subclass arch cdrom hda ssh_port ram ]],
+    rw => [qw[ id subclass arch cdrom hda ssh_port ram ]],
 );
 use Net::EmptyPort 'empty_port';
 use Log::Minimal;
+use Proc::Simple;
 
 sub boot {
     my ($self, $boot_opt, $boot_wait) = @_;
@@ -17,9 +18,17 @@ sub boot {
     unless ($self->ram) {
         $self->ram($ENV{TESTAMENT_VM_RAM} || 256);
     }
+
     infof('BOOT hda:%s ram:%sMBytes ssh_port:%d', $self->hda, $self->ram, $self->ssh_port);
+    $0 = sprintf( '%s [%s] %s ssh=%s ram=%s', __PACKAGE__, $self->subclass || 'QEMU', $self->id, $self->ssh_port, $self->ram );
+
     my $vm = $subclass->new(virt => $self);
-    $vm->boot(boot_opt => $boot_opt, boot_wait => $boot_wait);
+
+    my $proc = Proc::Simple->new;
+    $proc->redirect_output('/dev/null', '/dev/null');
+    $proc->start(sub{
+        $vm->boot(boot_opt => $boot_opt, boot_wait => $boot_wait);
+    });
 }
 
 sub create_image {

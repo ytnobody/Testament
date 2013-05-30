@@ -31,8 +31,14 @@ sub boot {
     my ( $class, $os_text, $os_version, $arch ) = @_;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
     my $box_conf = $config->{$identify_str};
+    $box_conf->{id} = $identify_str;
     my $virt = Testament::Virt->new(%$box_conf);
     $virt->boot();
+}
+
+sub uplist {
+    my ( $class ) = @_;
+###    Testament::Util->proclist;
 }
 
 1;

@@ -4,6 +4,7 @@ use warnings;
 use Log::Minimal;
 use File::Spec;
 use Testament::Config;
+### use P9Y::ProcessTable;
 
 sub mkdir {
     my ($class, $path) = @_;
@@ -35,6 +36,11 @@ sub box_identity {
 sub vmdir {
     my ($class, $identify_str) = @_;
     File::Spec->rel2abs(File::Spec->catdir($Testament::Config::VMDIR, $identify_str));
+}
+
+sub proclist {
+    my ($class) = @_;
+###    return P9Y::ProcessTable->table;
 }
 
 1;
