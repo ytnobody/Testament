@@ -57,7 +57,7 @@ sub install {
     $self->digest_file_name($digest_file_name);
     $self->remote_url_builder($remote_url_builder);
     $self->iso_file( &$iso_file_builder($self) );
-    my $virt = Testament::Virt->new( arch => $self->arch_short );
+    my $virt = Testament::Virt->new( id => $self->identity, arch => $self->arch_short );
     my $install_image = $self->_fetch_install_image();
     if ($install_image) {
         my $hda = File::Spec->catfile( $self->vmdir, 'hda.img' );
