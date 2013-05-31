@@ -1,42 +1,47 @@
 #!/bin/sh
 
-PKG_ADD=$(which pkg_add)
-APT_GET=$(which apt-get)
 GEM=$(which gem)
 CHEF=$(which chef)
 KNIFE=$(which knife)
+
+RBENV_REPO=git://github.com/sstephenson/rbenv.git
+RBENV_ROOT=$HOME/.rbenv
+PROF_FILE=$HOME/.profile
+
+RUBYBUILDER_REPO=git://github.com/sstephenson/ruby-build.git
+RBENV_PLUGIN_DIR=$RBENV_ROOT/plugins
 
 die () {
     echo $1 >&2
     exit 1
 }
 
-if [ $(whoami) != "root" ]; then
-    die "exec by super-user"
-fi
+write_profile () {
+    if [ $(grep "$1" $PROF_FILE | wc -l) -le 0 ] ; then
+        echo "$1" >> $PROF_FILE
+    fi
+}
 
-if [ -z "$PKG_ADD" ] && [ -z "$APT_GET" ]; then
-    die "apt-get and pkg_add not found"
-fi
+git --version || die "git is not installed."
 
 if [ -z "$GEM" ]; then 
-    if [ ! -z "$PKG_ADD" ]; then
-        $PKG_ADD ruby-gems
-        ln -sf /usr/local/bin/ruby18 /usr/local/bin/ruby
-        ln -sf /usr/local/bin/erb18 /usr/local/bin/erb
-        ln -sf /usr/local/bin/irb18 /usr/local/bin/irb
-        ln -sf /usr/local/bin/rdoc18 /usr/local/bin/rdoc
-        ln -sf /usr/local/bin/ri18 /usr/local/bin/ri
-        ln -sf /usr/local/bin/testrb18 /usr/local/bin/testrb
-        ln -sf /usr/local/bin/gem18 /usr/local/bin/gem
-    elif [ ! -z "$APT_GET" ]; then
-        $APT_GET install ruby rubygems
-    fi
+    ### setup rbenv
+    git clone $RBENV_REPO $RBENV_ROOT || die "git clone failure : $RBENV_REPO"
+    write_profile 'export RBENV_ROOT=$HOME/.rbenv'
+    write_profile 'export PATH=$PATH:$RBENV_ROOT/bin'
+    write_profile 'eval "$(rbenv init -)"'
+
+    ### setup ruby-builder
+    mkdir $RBENV_PLUGIN_DIR
+    git clone $RUBYBUILDER_REPO $RBENV_PLUGIN_DIR/ruby-build || die "git clone failure : $RUBYBUILDER_REPO"
+
+    ### load profile
+    . $PROF_FILE 
     GEM=$(which gem)
 fi
 
 if [ -z "$GEM" ]; then
-    die "failure to install rubygems"
+    die "failure to install gem"
 fi
 
 if [ -z "$CHEF" ] ; then
@@ -45,7 +50,7 @@ if [ -z "$CHEF" ] ; then
     KNIFE=$(which knife)
     $KNIFE configure
     $GEM i knife-solo --no-ri --no-rdoc
-    echo "done."
+    echo "install finished."
 else
     echo "already installed."
 fi
