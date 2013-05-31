@@ -12,6 +12,7 @@ requires 'IO::Stty', 0;
 requires 'Time::HiRes', 0;
 requires 'URI', 0;
 requires 'Proc::Simple', 0;
+requires 'Data::Dumper::Concise', 0;
 
 on 'build' => sub {
     requires 'Test::More', '0.98';

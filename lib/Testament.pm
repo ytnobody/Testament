@@ -184,13 +184,51 @@ To show failure report for your module,
     0.05 perl-5.10.0 OpenBSD 5.1 OpenBSD.i386-openbsd
     0.05 perl-5.14.4 FreeBSD 9.1-release amd64-freebsd-thread-multi
 
-And, you can create virtual environment
+And, you can create a new box
 
     $ testament create OpenBSD 5.1 OpenBSD.i386-openbsd
 
 =head1 DESCRIPTION
 
 Testament is a testing environment builder tool.
+
+=head1 USAGE
+
+  testament subcommand [arguments]
+
+=head2 subcommand
+
+=over 4
+
+=item boot [os-test os-version architecture] : boot-up specified box
+
+=item create [os-test os-version architecture] : create environment
+
+=item put [os-test os-version architecture source-file dest-path] : put file into specified box
+
+=item help [(no arguments)] : show this help
+
+=item failures [cpan-module-name] : fetch and show boxes that failures testing
+
+=item get [os-test os-version architecture source-file dest-path] : get file from specified box
+
+=item kill [os-test os-version architecture] : kill specified box
+
+=item setup_chef [os-test os-version architecture] : setup chef-solo into specified box
+
+=item list [(no arguments)] : show boxes in your machine
+
+=item install [os-test os-version architecture] : alias for create
+
+=item enter [os-test os-version architecture] : enter into box
+
+=item version [(no arguments)] : show testament version
+
+=item delete [os-test os-version architecture] : delete specified box
+
+=item exec [os-test os-version architecture commands...] : execute command into box
+
+=back
 
 =head1 LICENSE
 
