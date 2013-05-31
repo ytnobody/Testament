@@ -1,8 +1,10 @@
 package Testament::Util;
 use strict;
 use warnings;
+use Cwd;
 use Log::Minimal;
 use File::Spec;
+use Scope::Guard;
 use Testament::Config;
 
 sub mkdir {
@@ -60,4 +62,14 @@ sub is_box_running {
     grep {$_->{cmd} =~ /$id/} Testament::Util->running_boxes;
 }
 
+sub will_be_right_back {
+    my ($class, $destination) = @_;
+
+    my $cwd = getcwd();
+    chdir $destination;
+
+    return Scope::Guard->new(sub {
+        chdir $cwd;
+    });
+}
 1;
