@@ -49,13 +49,15 @@ sub list {
     }
 }
 
-sub enter {
-    my ( $class, $os_text, $os_version, $arch ) = @_;
+sub exec {
+    my ( $class, $os_text, $os_version, $arch, $cmd ) = @_;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
     die sprintf("%s is not running", $identify_str) unless Testament::Util->is_box_running($identify_str);
     my $box_conf = $config->{$identify_str};
     $box_conf->{id} = $identify_str;
-    my $spawn = Expect->spawn('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
+    my @cmdlist = ('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
+    push @cmdlist, $cmd if defined $cmd;
+    my $spawn = Expect->spawn(@cmdlist);
     $spawn->expect(1,
         ["(yes/no)?" => sub {
             shift->send("yes\n");
@@ -68,6 +70,19 @@ sub enter {
     );
     $spawn->interact;
     $spawn->soft_close;
+}
+
+sub enter {
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    $class->exec($os_text, $os_version, $arch);
+}
+
+sub kill {
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    my ( $proc ) = Testament::Util->is_box_running($identify_str);
+    die sprintf("%s is not running", $identify_str) unless $proc;
+    kill(15, $proc->{pid}); ### SIGTERM
 }
 
 1;

@@ -34,7 +34,7 @@ sub boot {
         push @options, ('-cdrom' => $virt->cdrom);
         push @options, ('-boot'  => 'once=d');
     }
-    system($bin, @options);   
+    return ($bin, @options);   
 }
 
 sub new_port {

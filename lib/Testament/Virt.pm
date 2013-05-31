@@ -24,10 +24,17 @@ sub boot {
 
     my $vm = $subclass->new(virt => $self);
 
-    my $proc = Proc::Simple->new;
-    $proc->redirect_output('/dev/null', '/dev/null');
-    $proc->start(sub{
-        $vm->boot(boot_opt => $boot_opt, boot_wait => $boot_wait);
+    my $master_proc = Proc::Simple->new;
+    my $slave_proc = Proc::Simple->new;
+    $master_proc->redirect_output('/dev/null', undef);
+    $slave_proc->redirect_output('/dev/null', '/dev/null');
+    $master_proc->start(sub {
+        $SIG{TERM} = $SIG{INT} = $SIG{KILL} = sub {
+            $slave_proc->kill;
+            exit;
+        };
+        $slave_proc->start( $vm->boot(boot_opt => $boot_opt, boot_wait => $boot_wait) );
+        $slave_proc->wait;
     });
 }
 

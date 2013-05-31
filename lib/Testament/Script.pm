@@ -92,6 +92,21 @@ sub _CMD_enter {
     Testament->enter( $os_text, $os_version, $arch );
 }
 
+# Exec in box
+sub _CMD_exec {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch, @cmdlist ) = @{ $self->{args} };
+    my $cmd = join(' ', @cmdlist);
+    Testament->exec( $os_text, $os_version, $arch, $cmd );
+}
+
+# Kill box
+sub _CMD_kill {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    Testament->kill( $os_text, $os_version, $arch);
+}
+
 # Show help tips
 sub _CMD_help {
     # TODO implement!!!!
