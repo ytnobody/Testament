@@ -85,6 +85,17 @@ sub kill {
     kill(15, $proc->{pid}); ### SIGTERM
 }
 
+sub delete {
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    my ( $proc ) = Testament::Util->is_box_running($identify_str);
+    $class->kill($os_text, $os_version, $arch) if $proc;
+    my $vmdir = Testament::Util->vmdir($identify_str);
+    system("rm -rfv $vmdir");
+    delete $config->{$identify_str};
+    Testament::Config->save($config);
+}
+
 1;
 __END__
 

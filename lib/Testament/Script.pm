@@ -107,6 +107,13 @@ sub _CMD_kill {
     Testament->kill( $os_text, $os_version, $arch);
 }
 
+# Delete box
+sub _CMD_delete {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    Testament->delete( $os_text, $os_version, $arch);
+}
+
 # Show help tips
 sub _CMD_help {
     # TODO implement!!!!
