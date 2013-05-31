@@ -128,6 +128,13 @@ sub _CMD_get {
     Testament->get( $os_text, $os_version, $arch, $src, $dst );
 }
 
+# Setup chef-solo into box
+sub _CMD_setup_chef {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    Testament->setup_chef( $os_text, $os_version, $arch );
+}
+
 # Show help tips
 sub _CMD_help {
     # TODO implement!!!!

@@ -6,9 +6,17 @@ use Testament::Setup;
 use Testament::Config;
 use Testament::Virt;
 use Testament::Util;
+use Testament::URLFetcher;
+use File::Spec;
 use Expect;
+use Cwd;
 
 our $VERSION = "0.01";
+
+my $CHEF_INSTALLER_URL = 'https://raw.github.com/ytnobody/Testament/master/script/install-chef-solo.sh';
+my $RBENV_REPO         = 'git://github.com/sstephenson/rbenv.git';
+my $RUBYBUILDER_REPO   = 'git://github.com/sstephenson/ruby-build.git';
+
 my $config = Testament::Config->load;
 
 sub setup {
@@ -97,11 +105,12 @@ sub delete {
 }
 
 sub file_transfer {
-    my ( $class, $os_text, $os_version, $arch, $src, $dst, $mode ) = @_;
+    my ( $class, $os_text, $os_version, $arch, $src, $dst, $mode, @opts ) = @_;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
     die sprintf("%s is not running", $identify_str) unless Testament::Util->is_box_running($identify_str);
     my $box_conf = $config->{$identify_str};
     my @cmdlist = ('scp', '-P', $box_conf->{ssh_port});
+    push @cmdlist, @opts if @opts;
     push @cmdlist, $mode eq 'put' ? ($src, 'root@127.0.0.1:'.$dst) : ('root@127.0.0.1:'.$dst, $src);
     my $spawn = Expect->spawn(@cmdlist);
     $spawn->expect(1,
@@ -119,13 +128,42 @@ sub file_transfer {
 }
 
 sub put {
-    my ( $class, $os_text, $os_version, $arch, $src, $dst ) = @_;
-    $class->file_transfer($os_text, $os_version, $arch, $src, $dst, 'put');
+    my ( $class, $os_text, $os_version, $arch, $src, $dst, @opts ) = @_;
+    $class->file_transfer($os_text, $os_version, $arch, $src, $dst, 'put', @opts);
 }
 
 sub get {
-    my ( $class, $os_text, $os_version, $arch, $src, $dst ) = @_;
-    $class->file_transfer($os_text, $os_version, $arch, $src, $dst, 'get');
+    my ( $class, $os_text, $os_version, $arch, $src, $dst, @opts ) = @_;
+    $class->file_transfer($os_text, $os_version, $arch, $src, $dst, 'get', @opts);
+}
+
+sub setup_chef {
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my @osparam = ($os_text, $os_version, $arch);
+    my $installer    = File::Spec->catdir($Testament::Config::WORKDIR, 'install-chef-solo.sh');
+    my $rbenv        = File::Spec->catdir($Testament::Config::WORKDIR, '.rbenv');
+    my $rbenv_plugin = File::Spec->catdir($rbenv, 'plugins');
+    my $ruby_builder = File::Spec->catdir($rbenv_plugin, 'ruby-build');
+    unless ( -e $installer ) {
+        Testament::URLFetcher->wget($CHEF_INSTALLER_URL, $installer);
+    }
+    if ( -e $rbenv ) {
+        my $cwd = getcwd;
+        chdir $rbenv;
+        system('git pull');
+        chdir $ruby_builder;
+        system('git pull');
+        chdir $cwd;
+    }
+    else {
+        system(sprintf("git clone %s %s", $RBENV_REPO, $rbenv));
+        mkdir($rbenv_plugin);
+        mkdir($ruby_builder);
+        system(sprintf("git clone %s %s", $RUBYBUILDER_REPO, $ruby_builder));
+    }
+    $class->put( @osparam, $rbenv, '/root/', '-r' ); 
+    $class->put( @osparam, $installer, '/root/' ); 
+    $class->exec( @osparam, 'sh /root/install-chef-solo.sh' );
 }
 
 1;
