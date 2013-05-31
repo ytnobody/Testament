@@ -114,6 +114,20 @@ sub _CMD_delete {
     Testament->delete( $os_text, $os_version, $arch);
 }
 
+# Put file into box
+sub _CMD_put {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch, $src, $dst ) = @{ $self->{args} };
+    Testament->put( $os_text, $os_version, $arch, $src, $dst );
+}
+
+# Get file from box
+sub _CMD_get {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch, $src, $dst ) = @{ $self->{args} };
+    Testament->get( $os_text, $os_version, $arch, $src, $dst );
+}
+
 # Show help tips
 sub _CMD_help {
     # TODO implement!!!!

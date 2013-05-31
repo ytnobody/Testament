@@ -96,6 +96,38 @@ sub delete {
     Testament::Config->save($config);
 }
 
+sub file_transfer {
+    my ( $class, $os_text, $os_version, $arch, $src, $dst, $mode ) = @_;
+    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    die sprintf("%s is not running", $identify_str) unless Testament::Util->is_box_running($identify_str);
+    my $box_conf = $config->{$identify_str};
+    my @cmdlist = ('scp', '-P', $box_conf->{ssh_port});
+    push @cmdlist, $mode eq 'put' ? ($src, 'root@127.0.0.1:'.$dst) : ('root@127.0.0.1:'.$dst, $src);
+    my $spawn = Expect->spawn(@cmdlist);
+    $spawn->expect(1,
+        ["(yes/no)?" => sub {
+            shift->send("yes\n");
+        } ],
+    );
+    $spawn->expect(1,
+        [qr/sword/ => sub {
+            shift->send("testament\n");
+        } ],
+    );
+    $spawn->interact;
+    $spawn->soft_close;
+}
+
+sub put {
+    my ( $class, $os_text, $os_version, $arch, $src, $dst ) = @_;
+    $class->file_transfer($os_text, $os_version, $arch, $src, $dst, 'put');
+}
+
+sub get {
+    my ( $class, $os_text, $os_version, $arch, $src, $dst ) = @_;
+    $class->file_transfer($os_text, $os_version, $arch, $src, $dst, 'get');
+}
+
 1;
 __END__
 
