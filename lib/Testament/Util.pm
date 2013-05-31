@@ -55,4 +55,9 @@ sub running_boxes {
     } `ps ax | grep 'Testament::Virt'`;
 }
 
+sub is_box_running {
+    my ($class, $id) = @_;
+    grep {$_->{cmd} =~ /$id/} Testament::Util->running_boxes;
+}
+
 1;

@@ -41,7 +41,7 @@ sub list {
     my ( $class ) = @_;
     my @running = Testament::Util->running_boxes;
     my $max_l = (sort {$b <=> $a} map {length($_)} keys %$config)[0];
-    printf "% ".$max_l."s % 8s % 6sMB % 8s\n", 'BOX-ID', 'STATUS', 'RAM', 'SSH-PORT';
+    printf "% ".$max_l."s % 8s % 8s % 8s\n", 'BOX-ID', 'STATUS', 'RAM', 'SSH-PORT';
     for my $id (keys %$config) {
         my $vm = $config->{$id};
         my $status = scalar(grep { $_->{cmd} =~ /$id/ } @running) > 0 ? 'RUNNING' : '---';
@@ -52,6 +52,7 @@ sub list {
 sub enter {
     my ( $class, $os_text, $os_version, $arch ) = @_;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    die sprintf("%s is not running", $identify_str) unless Testament::Util->is_box_running($identify_str);
     my $box_conf = $config->{$identify_str};
     $box_conf->{id} = $identify_str;
     my $spawn = Expect->spawn('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
