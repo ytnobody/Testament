@@ -80,6 +80,18 @@ sub _CMD_version {
     print "$Testament::VERSION\n";
 }
 
+# Show box list
+sub _CMD_list {
+    Testament->list;
+}
+
+# Enter into box
+sub _CMD_enter {
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    Testament->enter( $os_text, $os_version, $arch );
+}
+
 # Show help tips
 sub _CMD_help {
     # TODO implement!!!!

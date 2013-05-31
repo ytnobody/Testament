@@ -55,6 +55,7 @@
             "File::Which" : "0",
             "Furl" : "2.10",
             "IO::Stty" : "0",
+            "IPC::Run" : "0",
             "JSON" : "0",
             "List::Util" : "0",
             "Log::Minimal" : "0",

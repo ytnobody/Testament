@@ -4,7 +4,6 @@ use warnings;
 use Log::Minimal;
 use File::Spec;
 use Testament::Config;
-### use P9Y::ProcessTable;
 
 sub mkdir {
     my ($class, $path) = @_;
@@ -38,9 +37,22 @@ sub vmdir {
     File::Spec->rel2abs(File::Spec->catdir($Testament::Config::VMDIR, $identify_str));
 }
 
-sub proclist {
-    my ($class) = @_;
-###    return P9Y::ProcessTable->table;
+sub running_boxes {
+    my $class = shift;
+    grep {$_->{cmd} =~ /^Testament::Virt / }
+    map {
+        my $str = $_;
+        $str =~ s/^\s+//;
+        my ($pid, $tty, $stat, $time, $cmd) = split(/\s+/, $str, 5);
+        $cmd =~ s/\n//;
+        +{
+            pid  => $pid,
+            tty  => $tty,
+            stat => $stat,
+            time => $time,
+            cmd  => $cmd,
+        };
+    } `ps ax | grep 'Testament::Virt'`;
 }
 
 1;

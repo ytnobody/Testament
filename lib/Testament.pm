@@ -6,6 +6,7 @@ use Testament::Setup;
 use Testament::Config;
 use Testament::Virt;
 use Testament::Util;
+use Expect;
 
 our $VERSION = "0.01";
 my $config = Testament::Config->load;
@@ -36,9 +37,36 @@ sub boot {
     $virt->boot();
 }
 
-sub uplist {
+sub list {
     my ( $class ) = @_;
-###    Testament::Util->proclist;
+    my @running = Testament::Util->running_boxes;
+    my $max_l = (sort {$b <=> $a} map {length($_)} keys %$config)[0];
+    printf "% ".$max_l."s % 8s % 6sMB % 8s\n", 'BOX-ID', 'STATUS', 'RAM', 'SSH-PORT';
+    for my $id (keys %$config) {
+        my $vm = $config->{$id};
+        my $status = scalar(grep { $_->{cmd} =~ /$id/ } @running) > 0 ? 'RUNNING' : '---';
+        printf "% ".$max_l."s % 8s % 6sMB % 8s\n", $id, $status, $vm->{ram}, $vm->{ssh_port};
+    }
+}
+
+sub enter {
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    my $box_conf = $config->{$identify_str};
+    $box_conf->{id} = $identify_str;
+    my $spawn = Expect->spawn('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
+    $spawn->expect(1,
+        ["(yes/no)?" => sub {
+            shift->send("yes\n");
+        } ],
+    );
+    $spawn->expect(1,
+        [qr/sword/ => sub {
+            shift->send("testament\n");
+        } ],
+    );
+    $spawn->interact;
+    $spawn->soft_close;
 }
 
 1;

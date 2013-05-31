@@ -14,7 +14,7 @@ sub boot {
     my ($self, $boot_opt, $boot_wait) = @_;
     $boot_wait ||= 1;
     my $subclass = $self->load_subclass;
-    $self->ssh_port(empty_port());
+    $self->ssh_port(empty_port()) unless $self->ssh_port;
     unless ($self->ram) {
         $self->ram($ENV{TESTAMENT_VM_RAM} || 256);
     }

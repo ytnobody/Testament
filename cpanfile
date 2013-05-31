@@ -12,7 +12,7 @@ requires 'IO::Stty', 0;
 requires 'Time::HiRes', 0;
 requires 'URI', 0;
 requires 'Proc::Simple', 0;
-### requires 'P9Y::ProcessTable', 0;
+requires 'IPC::Run', 0;
 
 on 'build' => sub {
     requires 'Test::More', '0.98';
