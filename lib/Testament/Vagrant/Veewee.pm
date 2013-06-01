@@ -13,7 +13,7 @@ use constant VEEWEE_BASE_COMMAND => 'bundle exec veewee vbox ';
 sub new {
     my ($class, $os) = @_;
 
-    _verify_required_commands();
+    Testament::Util->verify_required_commands( [ 'git', 'bundle' ] );
 
     my $branch     = 'master';
     my $veewee_dir = File::Spec->catfile( $Testament::Config::WORKDIR, 'veewee' );
@@ -62,17 +62,5 @@ sub box_build {
 
     # 'echo "yes"' is needed to automatically build.
     system( 'echo "yes" | ' . VEEWEE_BASE_COMMAND . $build_command );
-}
-
-sub _verify_required_commands {
-    my @required_commands = ( 'git', 'bundle' );
-
-    foreach my $required_command (@required_commands) {
-        my $which_command = sprintf( "which %s", $required_command );
-        my $err = system("$which_command >/dev/null 2>&1");
-        if ($err) {
-            die "[Error] Please install `$required_command`.";
-        }
-    }
 }
 1;

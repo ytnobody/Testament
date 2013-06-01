@@ -72,4 +72,16 @@ sub will_be_right_back {
         chdir $cwd;
     });
 }
+
+sub verify_required_commands {
+    my ($class, $required_commands) = @_;
+
+    foreach my $required_command (@$required_commands) {
+        my $which_command = sprintf( "which %s", $required_command );
+        my $err = system("$which_command >/dev/null 2>&1");
+        if ($err) {
+            die "[Error] Please install `$required_command`.";
+        }
+    }
+}
 1;
