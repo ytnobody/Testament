@@ -33,14 +33,35 @@ sub new {
     }, $class;
 }
 
-sub box_define {
-    my ( $self ) = @_;
+sub box_create {
+    my ($self) = @_;
 
-    my $os         = $self->{os};
-    my $veewee_dir = $self->{veewee_dir};
-    my $guard = Testament::Util->will_be_right_back($veewee_dir);
+    $self->box_define();
+    $self->box_build();
+}
+
+sub box_define {
+    my ($self) = @_;
+
+    my $os             = $self->{os};
+    my $veewee_dir     = $self->{veewee_dir};
+    my $guard          = Testament::Util->will_be_right_back($veewee_dir);
     my $define_command = sprintf( "define %s %s --workdir=%s", $os, $os, $veewee_dir );
     system( VEEWEE_BASE_COMMAND . $define_command );
+
+    # TODO Configure User/Password HERE!
+}
+
+sub box_build {
+    my ($self) = @_;
+
+    my $os            = $self->{os};
+    my $veewee_dir    = $self->{veewee_dir};
+    my $guard         = Testament::Util->will_be_right_back($veewee_dir);
+    my $build_command = sprintf( "build %s --workdir=%s", $os, $veewee_dir );
+
+    # 'echo "yes"' is needed to automatically build.
+    system( 'echo "yes" | ' . VEEWEE_BASE_COMMAND . $build_command );
 }
 
 sub _verify_required_commands {
