@@ -13,13 +13,14 @@ use constant VEEWEE_BASE_COMMAND => 'bundle exec veewee vbox ';
 sub new {
     my ($class, $os) = @_;
 
-    Testament::Util->verify_required_commands( [ 'git', 'bundle' ] );
+    Testament::Util->verify_required_commands( ['bundle'] );
 
     my $branch     = 'master';
     my $veewee_dir = File::Spec->catfile( $Testament::Config::WORKDIR, 'veewee' );
-    Testament::Git::clone( VEEWEE_REPO, $veewee_dir );
-    Testament::Git::checkout( $veewee_dir, $branch );
-    Testament::Git::pull( $veewee_dir, $branch );
+    my $git        = Testament::Git->new();
+    $git->clone( VEEWEE_REPO, $veewee_dir );
+    $git->checkout( $veewee_dir, $branch );
+    $git->pull( $veewee_dir, $branch );
 
     my $bundle_install = sub {
         my $guard = Testament::Util->will_be_right_back($veewee_dir);
