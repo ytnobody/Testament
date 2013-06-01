@@ -32,7 +32,7 @@ subtest 'Show help' => sub {
         my (@args) = @_;
         my $testament = Testament::Script->new(@args);
         my ($got) = capture { $testament->execute() };
-        like $got, qr/Usage: testament COMMAND \[\.\.\.\]/;
+        like $got, qr/Usage: testament subcommand \[arguments\]/;
     };
 
     subtest 'by empty' => sub {
