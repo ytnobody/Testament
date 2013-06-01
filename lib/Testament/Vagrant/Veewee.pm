@@ -6,11 +6,12 @@ use Testament::Git;
 use Testament::Config;
 use Testament::Util;
 
-use constant VEEWEE_REPO => 'git://github.com/jedi4ever/veewee.git';
-use constant BUNDLE_DIR  => '.bundle/gems';
+use constant VEEWEE_REPO         => 'git://github.com/jedi4ever/veewee.git';
+use constant BUNDLE_DIR          => '.bundle/gems';
+use constant VEEWEE_BASE_COMMAND => 'bundle exec veewee vbox ';
 
 sub new {
-    my ($class) = @_;
+    my ($class, $os) = @_;
 
     _verify_required_commands();
 
@@ -28,7 +29,18 @@ sub new {
 
     bless {
         veewee_dir => $veewee_dir,
+        os         => $os,
     }, $class;
+}
+
+sub box_define {
+    my ( $self ) = @_;
+
+    my $os         = $self->{os};
+    my $veewee_dir = $self->{veewee_dir};
+    my $guard = Testament::Util->will_be_right_back($veewee_dir);
+    my $define_command = sprintf( "define %s %s --workdir=%s", $os, $os, $veewee_dir );
+    system( VEEWEE_BASE_COMMAND . $define_command );
 }
 
 sub _verify_required_commands {
