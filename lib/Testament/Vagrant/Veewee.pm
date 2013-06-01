@@ -33,14 +33,14 @@ sub new {
     }, $class;
 }
 
-sub box_create {
+sub create_box {
     my ($self) = @_;
 
-    $self->box_define();
-    $self->box_build();
+    $self->define_box();
+    $self->build_box();
 }
 
-sub box_define {
+sub define_box {
     my ($self) = @_;
 
     my $os             = $self->{os};
@@ -52,7 +52,7 @@ sub box_define {
     # TODO Configure User/Password HERE!
 }
 
-sub box_build {
+sub build_box {
     my ($self) = @_;
 
     my $os            = $self->{os};
