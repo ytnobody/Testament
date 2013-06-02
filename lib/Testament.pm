@@ -7,15 +7,16 @@ use Testament::Config;
 use Testament::Virt;
 use Testament::Util;
 use Testament::URLFetcher;
+use Testament::Constants qw(
+    CHEF_INSTALLER_URL
+    RBENV_REPO
+    RUBYBUILDER_REPO
+);
 use File::Spec;
 use Expect;
 use Cwd;
 
 our $VERSION = "0.01";
-
-my $CHEF_INSTALLER_URL = 'https://raw.github.com/ytnobody/Testament/master/script/install-chef-solo.sh';
-my $RBENV_REPO         = 'git://github.com/sstephenson/rbenv.git';
-my $RUBYBUILDER_REPO   = 'git://github.com/sstephenson/ruby-build.git';
 
 my $config = Testament::Config->load;
 
@@ -145,7 +146,7 @@ sub setup_chef {
     my $rbenv_plugin = File::Spec->catdir($rbenv, 'plugins');
     my $ruby_builder = File::Spec->catdir($rbenv_plugin, 'ruby-build');
     unless ( -e $installer ) {
-        Testament::URLFetcher->wget($CHEF_INSTALLER_URL, $installer);
+        Testament::URLFetcher->wget(CHEF_INSTALLER_URL, $installer);
     }
     if ( -e $rbenv ) {
         my $cwd = getcwd;
@@ -156,10 +157,10 @@ sub setup_chef {
         chdir $cwd;
     }
     else {
-        system(sprintf("git clone %s %s", $RBENV_REPO, $rbenv));
+        system(sprintf("git clone %s %s", RBENV_REPO, $rbenv));
         mkdir($rbenv_plugin);
         mkdir($ruby_builder);
-        system(sprintf("git clone %s %s", $RUBYBUILDER_REPO, $ruby_builder));
+        system(sprintf("git clone %s %s", RUBYBUILDER_REPO, $ruby_builder));
     }
     $class->put( @osparam, $rbenv, '/root/', '-r' ); 
     $class->put( @osparam, $installer, '/root/' ); 
