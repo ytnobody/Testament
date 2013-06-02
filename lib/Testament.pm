@@ -11,6 +11,7 @@ use Testament::Constants qw(
     CHEF_INSTALLER_URL
     RBENV_REPO
     RUBYBUILDER_REPO
+    SPAWN_TIMEOUT
 );
 use File::Spec;
 use Expect;
@@ -67,12 +68,12 @@ sub exec {
     my @cmdlist = ('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
     push @cmdlist, $cmd if defined $cmd;
     my $spawn = Expect->spawn(@cmdlist);
-    $spawn->expect(3,
+    $spawn->expect(SPAWN_TIMEOUT,
         ["(yes/no)?" => sub {
             shift->send("yes\n");
         } ],
     );
-    $spawn->expect(3,
+    $spawn->expect(SPAWN_TIMEOUT,
         [qr/sword/ => sub {
             shift->send("testament\n");
         } ],
@@ -114,12 +115,12 @@ sub file_transfer {
     push @cmdlist, @opts if @opts;
     push @cmdlist, $mode eq 'put' ? ($src, 'root@127.0.0.1:'.$dst) : ('root@127.0.0.1:'.$dst, $src);
     my $spawn = Expect->spawn(@cmdlist);
-    $spawn->expect(3,
+    $spawn->expect(SPAWN_TIMEOUT,
         ["(yes/no)?" => sub {
             shift->send("yes\n");
         } ],
     );
-    $spawn->expect(3,
+    $spawn->expect(SPAWN_TIMEOUT,
         [qr/sword/ => sub {
             shift->send("testament\n");
         } ],
