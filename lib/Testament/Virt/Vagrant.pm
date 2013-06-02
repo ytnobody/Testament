@@ -1,8 +1,8 @@
-package Testament::Vagrant;
+package Testament::Virt::Vagrant;
 use strict;
 use warnings;
 use Testament::Util;
-use Testament::Vagrant::Veewee;
+use Testament::Virt::Vagrant::Veewee;
 
 sub new {
     my ($class, $os) = @_;
@@ -18,7 +18,7 @@ sub install_box {
     my ($self) = @_;
     my $os = $self->{os};
 
-    my $veewee = Testament::Vagrant::Veewee->new($os);
+    my $veewee = Testament::Virt::Vagrant::Veewee->new($os);
     $veewee->create_box();
 
     my $guard = Testament::Util->will_be_right_back( $veewee->{veewee_dir} );
