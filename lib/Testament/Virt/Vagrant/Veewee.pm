@@ -1,4 +1,4 @@
-package Testament::Vagrant::Veewee;
+package Testament::Virt::Vagrant::Veewee;
 use strict;
 use warnings;
 use File::Spec;

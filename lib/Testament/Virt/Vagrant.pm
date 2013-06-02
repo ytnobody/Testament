@@ -1,4 +1,4 @@
-package Testament::Vagrant;
+package Testament::Virt::Vagrant;
 use strict;
 use warnings;
 use Testament::Util;
