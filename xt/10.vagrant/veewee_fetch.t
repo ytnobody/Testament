@@ -14,6 +14,7 @@ BEGIN {
 use Testament::Vagrant::Veewee;
 
 use Test::More;
+plan skip_all => "Skip test of fetching veewee." unless $ENV{TESTAMENT_DEVELOPMENT};
 
 subtest 'Clone veewee correctly.' => sub {
     my $veewee_dir = File::Spec->catfile( $FindBin::Bin, 'veewee' );
