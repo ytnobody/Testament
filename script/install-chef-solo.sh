@@ -24,6 +24,10 @@ if [ $(echo $SHELL | grep /bash | wc -l) -ne 1 ] ; then
     die "no bash, no life. suspended."
 fi
 
+if [ -z "$(which wget)" ] && [ -z "$(which curl)" ] ; then
+    die "please install wget or curl. suspended."
+fi
+
 if [ -z "$GEM" ]; then 
     ### setup rbenv
     write_profile 'export RBENV_ROOT=$HOME/.rbenv'
