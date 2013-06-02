@@ -32,7 +32,31 @@ subtest 'Show help' => sub {
         my (@args) = @_;
         my $testament = Testament::Script->new(@args);
         my ($got) = capture { $testament->execute() };
-        like $got, qr/Usage: testament subcommand \[arguments\]/;
+
+        my $help_message = <<EOH;
+Usage: testament subcommand [arguments]
+
+* subcommand
+  boot [os-test os-version architecture] :  boot-up specified box
+  create [os-test os-version architecture] : create environment
+  put [os-test os-version architecture source-file dest-path] : put file into specified box
+  help [(no arguments)] : show this help
+  failures [cpan-module-name] : fetch and show boxes that failures testing
+  get [os-test os-version architecture source-file dest-path] : get file from specified box
+  kill [os-test os-version architecture] : kill specified box
+  setup_chef [os-test os-version architecture] : setup chef-solo into specified box
+  list [(no arguments)] : show boxes in your machine
+  install [os-test os-version architecture] : alias for create
+  enter [os-test os-version architecture] : enter into box
+  version [(no arguments)] : show testament version
+  delete [os-test os-version architecture] : delete specified box
+  exec [os-test os-version architecture commands...] : execute command into box
+
+
+EOH
+
+        # like $got, qr/Usage: testament subcommand \[arguments\]/;
+        is $got, $help_message;
     };
 
     subtest 'by empty' => sub {
