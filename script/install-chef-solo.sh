@@ -7,6 +7,7 @@ KNIFE=$(which knife)
 RBENV_ROOT=$HOME/.rbenv
 PROF_FILE=$HOME/.profile
 RBENV_PLUGIN_DIR=$RBENV_ROOT/plugins
+RUBY_VERSION=1.9.3-p429
 
 die () {
     echo $1 >&2
@@ -27,6 +28,11 @@ if [ -z "$GEM" ]; then
 
     ### load profile
     . $PROF_FILE 
+
+    ### install ruby
+    rbenv install $RUBY_VERSION
+    rbenv global $RUBY_VERSION
+    
     GEM=$(which gem)
 fi
 
