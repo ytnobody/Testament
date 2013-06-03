@@ -2,21 +2,25 @@ package Testament::Virt::Vagrant;
 use strict;
 use warnings;
 use Testament::Util;
+use Testament::Virt::Vagrant::OS;
 use Testament::Virt::Vagrant::Veewee;
 
 sub new {
-    my ($class, $os) = @_;
+    my ( $class, %args ) = @_;
 
     Testament::Util->verify_required_commands( [ 'vagrant' ] );
 
     bless {
-        os => $os,
+        os_text    => $args{os_text},
+        os_version => $args{os_version},
+        arch       => $args{arch},
     }, $class;
 }
 
 sub install_box {
     my ($self) = @_;
-    my $os = $self->{os};
+
+    my $os = Testament::Virt::Vagrant::OS->argument_builder($self);
 
     my $veewee = Testament::Virt::Vagrant::Veewee->new($os);
     $veewee->create_box();
