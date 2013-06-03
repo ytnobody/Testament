@@ -28,7 +28,6 @@ subtest 'Show version' => sub {
 };
 
 subtest 'Show help' => sub {
-    my $help_message      = join('', (<DATA>));
     my $test_showing_help = sub {
         my (@args) = @_;
 
@@ -37,7 +36,8 @@ subtest 'Show help' => sub {
         my ($got)       = capture { $testament->execute() };
         seek Testament::Script::DATA, $data_origin, 0; # To rewind DATA file handler
 
-        is $got, $help_message;
+        # Should get the top line of help message
+        like $got, qr/Usage: testament subcommand \[arguments\]/;
     };
 
     subtest 'by empty' => sub {
@@ -76,24 +76,3 @@ subtest 'Detect illegal command' => sub {
 };
 
 done_testing;
-
-__DATA__
-Usage: testament subcommand [arguments]
-
-* subcommand
-  boot [os-test os-version architecture] :  boot-up specified box
-  create [os-test os-version architecture] : create environment
-  put [os-test os-version architecture source-file dest-path] : put file into specified box
-  help [(no arguments)] : show this help
-  failures [cpan-module-name] : fetch and show boxes that failures testing
-  get [os-test os-version architecture source-file dest-path] : get file from specified box
-  kill [os-test os-version architecture] : kill specified box
-  setup_chef [os-test os-version architecture] : setup chef-solo into specified box
-  list [(no arguments)] : show boxes in your machine
-  install [os-test os-version architecture] : alias for create
-  enter [os-test os-version architecture] : enter into box
-  version [(no arguments)] : show testament version
-  delete [os-test os-version architecture] : delete specified box
-  exec [os-test os-version architecture commands...] : execute command into box
-
-
