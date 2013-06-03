@@ -8,6 +8,7 @@ use Data::Dumper;
 our $CONF_FILE    = $ENV{TESTAMENT_CONF_FILE}    || File::Spec->catfile($ENV{HOME}, qw(.testament oslist.pl));
 our $WORKDIR      = $ENV{TESTAMENT_WORKDIR}      || dirname($CONF_FILE);
 our $VMDIR        = $ENV{TESTAMENT_VMDIR}        || File::Spec->catdir($WORKDIR,'vm');
+our $VM_BACKEND   = $ENV{TESTAMENT_VM_BACKEND};
 
 __PACKAGE__->create unless -e $CONF_FILE;
 
