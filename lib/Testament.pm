@@ -5,6 +5,7 @@ use warnings;
 use Testament::Setup;
 use Testament::Config;
 use Testament::Virt;
+use Testament::Virt::Vagrant;
 use Testament::Util;
 use Testament::URLFetcher;
 use Testament::Constants qw(
@@ -27,6 +28,12 @@ sub setup {
     if ($os_text eq 'GNU_Linux') {
         # TODO It's all right?
         ($os_version) = $os_version =~ m/(.*?-.+?)(?:-.*)?/;
+    }
+
+    if ($Testament::Config::VM_BACKEND =~ /^vagrant$/) {
+        my $vagrant = Testament::Virt::Vagrant->new( os_text => $os_text, os_version => $os_version, arch => $arch );
+        $vagrant->install_box();
+        return 1;
     }
 
     my $setup = Testament::Setup->new( os_text => $os_text, os_version => $os_version, arch => $arch );
@@ -163,8 +170,8 @@ sub setup_chef {
         mkdir($ruby_builder);
         system(sprintf("git clone %s %s", RUBYBUILDER_REPO, $ruby_builder));
     }
-    $class->put( @osparam, $rbenv, '/root/', '-r' ); 
-    $class->put( @osparam, $installer, '/root/' ); 
+    $class->put( @osparam, $rbenv, '/root/', '-r' );
+    $class->put( @osparam, $installer, '/root/' );
     $class->exec( @osparam, 'sh /root/install-chef-solo.sh' );
 }
 
