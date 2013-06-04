@@ -65,7 +65,7 @@ sub _CMD_failures {
     my $distro  = shift @args;
     my $version = shift @args;
 
-    my @failed_boxes = Testament::BoxSetting::fetch_box_setting($distro, $version);
+    my @failed_boxes = Testament::BoxSetting::fetch_failed_boxes($distro, $version);
     foreach my $box (@failed_boxes) {
         # TODO consider layout
         print "$box->{version} perl-$box->{perl} $box->{ostext} $box->{osvers} $box->{platform}\n";

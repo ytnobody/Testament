@@ -10,11 +10,11 @@ use List::Util qw/first/;
 use constant SUCCESS_CODE => 200;
 use constant SUPPORTED_OS => ( 'OpenBSD', 'FreeBSD', 'NetBSD', 'GNU/Linux' );    # TODO
 
-sub fetch_box_setting {
+sub fetch_failed_boxes {
     my ( $distro, $version ) = @_;
 
     # TODO consider messages.
-    $distro or croak "fetch_box_setting requires module name.";
+    $distro or croak "fetch_failed_boxes requires module name.";
 
     my $json =
       _download_json_test_report( _construct_report_json_url($distro) );
