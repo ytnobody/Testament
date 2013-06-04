@@ -20,21 +20,26 @@ sub new {
 sub install_box {
     my ($self) = @_;
 
-    my $os = Testament::Virt::Vagrant::OS->argument_builder($self);
+    my $box_info = Testament::Virt::Vagrant::OS->argument_builder($self);
 
-    my $veewee = Testament::Virt::Vagrant::Veewee->new($os);
+    my $veewee = Testament::Virt::Vagrant::Veewee->new( $box_info->{os} );
     $veewee->create_box();
 
     my $guard = Testament::Util->will_be_right_back( $veewee->{veewee_dir} );
 
     # export box as Virtual Box style.
     mkdir('boxes');
-    my $target = sprintf('boxes/%s.box', $os);
+    my $target = sprintf( 'boxes/%s.box', $box_info->{os} );
     unless ( -e $target ) {
-        system(sprintf( 'vagrant package --base %s --output %s', $os, $target ));
+        system(
+            sprintf(
+                'vagrant package --base %s --output %s',
+                $box_info->{os}, $target
+            )
+        );
     }
 
     # add box
-    system(sprintf( 'vagrant box add %s %s', $os, $target ));
+    system( sprintf( 'vagrant box add %s %s', $box_info->{os}, $target ) );
 }
 1;

@@ -7,10 +7,10 @@ sub argument_builder {
 
     my $os_version = $vagrant->{os_version};
     $os_version =~ s/\.//g;
-    my ($arch) = $vagrant->{arch} =~ /^OpenBSD\.(.*)-openbsd(?:-(.*))?/;
-    my $os = lc($vagrant->{os_text}) . $os_version . '_' . $arch;
+    my ( $arch, $opt ) = $vagrant->{arch} =~ /^OpenBSD\.(.*)-openbsd(?:-(.*))?/;
+    my $os = lc( $vagrant->{os_text} ) . $os_version . '_' . $arch;
 
-    return $os;
+    return { os => $os, opt => $opt };
 }
 
 1;
