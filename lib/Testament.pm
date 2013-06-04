@@ -239,6 +239,14 @@ Testament is a testing environment builder tool.
 
 =back
 
+=head1 BUILD STATUS
+
+=begin html
+
+<img src="https://travis-ci.org/ytnobody/Testament.png?branch=master">
+
+=end html
+
 =head1 LICENSE
 
 Copyright (C) ytnobody.

@@ -40,6 +40,10 @@ Testament is a testing environment builder tool.
 - delete \[os-test os-version architecture\] : delete specified box
 - exec \[os-test os-version architecture commands...\] : execute command into box
 
+# BUILD STATUS
+
+<img src="https://travis-ci.org/ytnobody/Testament.png?branch=master">
+
 # LICENSE
 
 Copyright (C) ytnobody.
