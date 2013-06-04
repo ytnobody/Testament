@@ -12,11 +12,11 @@ requires 'IO::Stty',              0;
 requires 'Time::HiRes',           0;
 requires 'URI',                   0;
 requires 'Proc::Simple',          0;
-requires 'Scope::Guard',          0;
+requires 'Scope::Guard',          '0.20';
 requires 'Data::Dumper::Concise', 0;
 
 on 'build' => sub {
     requires 'Test::More',    '0.98';
-    requires 'Scope::Guard',  '0.20';
     requires 'Capture::Tiny', 0;
+    requires 'File::pushd',   '1.005';
 };
