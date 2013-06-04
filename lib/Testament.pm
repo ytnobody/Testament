@@ -184,6 +184,12 @@ __END__
 
 Testament - TEST AssignMENT
 
+=begin html
+
+<img src="https://travis-ci.org/ytnobody/Testament.png?branch=master">
+
+=end html
+
 =head1 SYNOPSIS
 
 To show failure report for your module,
@@ -238,14 +244,6 @@ Testament is a testing environment builder tool.
 =item exec [os-test os-version architecture commands...] : execute command into box
 
 =back
-
-=head1 BUILD STATUS
-
-=begin html
-
-<img src="https://travis-ci.org/ytnobody/Testament.png?branch=master">
-
-=end html
 
 =head1 LICENSE
 
