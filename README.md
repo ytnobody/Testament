@@ -2,6 +2,8 @@
 
 Testament - TEST AssignMENT
 
+<img src="https://travis-ci.org/ytnobody/Testament.png?branch=master">
+
 # SYNOPSIS
 
 To show failure report for your module,
@@ -39,10 +41,6 @@ Testament is a testing environment builder tool.
 - version \[(no arguments)\] : show testament version
 - delete \[os-test os-version architecture\] : delete specified box
 - exec \[os-test os-version architecture commands...\] : execute command into box
-
-# BUILD STATUS
-
-<img src="https://travis-ci.org/ytnobody/Testament.png?branch=master">
 
 # LICENSE
 
