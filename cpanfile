@@ -19,4 +19,5 @@ on 'build' => sub {
     requires 'Test::More',    '0.98';
     requires 'Capture::Tiny', 0;
     requires 'File::pushd',   '1.005';
+    requires 'Archive::Tar',  '1.90';
 };
