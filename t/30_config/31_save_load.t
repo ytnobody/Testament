@@ -2,11 +2,7 @@
 
 use strict;
 use warnings;
-use Cwd;
-use File::Basename;
-use File::pushd;
-use File::Temp qw/tempdir/;
-use File::Spec;
+use t::FileUtil;
 use FindBin;
 
 use Test::More;
@@ -14,8 +10,8 @@ use Test::More;
 my $guard       = pushd( tempdir( 'Testament-Temp-XXXX', CLEANUP => 1 ) );
 my $current_dir = Cwd::getcwd();
 
-$ENV{TESTAMENT_CONF_FILE} = File::Spec->catfile( $current_dir, 'conffile' );
-require File::Spec->catfile( dirname( dirname($FindBin::Bin) ), 'lib', 'Testament', 'Config.pm' );
+$ENV{TESTAMENT_CONF_FILE} = catfile( $current_dir, 'conffile' );
+require( catfile( dirname( dirname($FindBin::Bin) ), 'lib', 'Testament', 'Config.pm' ) );
 Testament::Config::create_conf_file();
 
 subtest 'create conf file and load successfully' => sub {
