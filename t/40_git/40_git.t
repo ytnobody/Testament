@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 use Archive::Tar;
-use Cwd;
 use FindBin;
 use t::FileUtil;
 use Testament::Git;
@@ -11,9 +10,9 @@ use Testament::Git;
 use Test::More;
 
 subtest 'git' => sub {
-    my $git         = Testament::Git->new();
-    my $guard       = pushd(tempdir('Testament-Temp-Git-XXXX', CLEANUP => 1));
-    my $cwd         = Cwd::getcwd();
+    my $git   = Testament::Git->new();
+    my $guard = pushd(tempdir('Testament-Temp-Git-XXXX', CLEANUP => 1));
+    my $cwd   = getcwd();
 
     my $extract_archive = sub {
         my ($repos) = @_;
@@ -28,7 +27,7 @@ subtest 'git' => sub {
     my $ahead_repos_path  = $extract_archive->('test_repos_ahead');
     my $cloned_repos_path = catfile( $cwd, 'test_repos' );
 
-    my $branch_file       = catfile( $cwd, 'test_repos', 'branch.pl' );
+    my $branch_file = catfile( $cwd, 'test_repos', 'branch.pl' );
     my $test_contents = sub {
         my ($branch, $expected) = @_;
         $expected ||= $branch;

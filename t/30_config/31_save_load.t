@@ -8,7 +8,7 @@ use FindBin;
 use Test::More;
 
 my $guard       = pushd( tempdir( 'Testament-Temp-XXXX', CLEANUP => 1 ) );
-my $current_dir = Cwd::getcwd();
+my $current_dir = getcwd();
 
 $ENV{TESTAMENT_CONF_FILE} = catfile( $current_dir, 'conffile' );
 require( catfile( dirname( dirname($FindBin::Bin) ), 'lib', 'Testament', 'Config.pm' ) );
