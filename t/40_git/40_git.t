@@ -19,7 +19,7 @@ subtest 'git' => sub {
     my $test_contents = sub {
         my $branch = shift;
         my $expected = shift;
-        my $expected ||= $branch;
+        $expected ||= $branch;
 
         $git->checkout( $cwd, $branch );
         my $contents = do $branch_file;
