@@ -1,3 +1,3 @@
 +{
-    name => 'master',
+    name => 'master_ahead',
 }
