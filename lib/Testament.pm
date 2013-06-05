@@ -17,7 +17,6 @@ use Testament::Constants qw(
 );
 use File::Spec;
 use Expect;
-use Cwd;
 
 our $VERSION = "0.01";
 
