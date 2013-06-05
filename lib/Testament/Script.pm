@@ -41,7 +41,7 @@ sub _CMD_create {
 
         # TODO implement!
         # interaction mode
-        ...;
+        die 'Interaction mode has not implemented yet.'
     }
 
     my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
