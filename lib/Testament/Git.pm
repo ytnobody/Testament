@@ -15,10 +15,10 @@ sub clone {
 }
 
 sub pull {
-    my ( $self, $path, $branch ) = @_;
+    my ( $self, $path, $remote, $branch ) = @_;
 
     my $guard = Testament::Util->will_be_right_back($path);
-    system( sprintf( "git pull origin %s", $branch ) );
+    system( sprintf( "git pull %s %s", $remote, $branch ) );
 }
 
 sub checkout {

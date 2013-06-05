@@ -33,12 +33,12 @@ subtest 'git' => sub {
     };
 
     subtest 'checkout' => sub {
-        subtest 'master branch' => sub {
-            $test_contents->('master');
-        };
-
         subtest 'test branch' => sub {
             $test_contents->('test_branch');
+        };
+
+        subtest 'master branch' => sub {
+            $test_contents->('master');
         };
     };
 

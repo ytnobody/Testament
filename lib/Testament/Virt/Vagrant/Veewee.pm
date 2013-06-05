@@ -20,7 +20,7 @@ sub new {
     my $git        = Testament::Git->new();
     $git->clone( VEEWEE_REPO, $veewee_dir );
     $git->checkout( $veewee_dir, $branch );
-    $git->pull( $veewee_dir, $branch );
+    $git->pull( $veewee_dir, 'origin', $branch );
 
     my $bundle_install = sub {
         my $guard = Testament::Util->will_be_right_back($veewee_dir);

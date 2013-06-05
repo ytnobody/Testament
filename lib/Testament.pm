@@ -157,8 +157,8 @@ sub setup_chef {
         Testament::URLFetcher->wget(CHEF_INSTALLER_URL, $installer);
     }
     if (-e $rbenv) {
-        Testament::Git->pull($rbenv, 'master');
-        Testament::Git->pull($ruby_builder, 'master');
+        Testament::Git->pull($rbenv, 'origin', 'master');
+        Testament::Git->pull($ruby_builder, 'origin', 'master');
     }
     else {
         Testament::Git->clone(RBENV_REPO, $rbenv);
