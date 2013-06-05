@@ -8,6 +8,7 @@ use Testament::Virt;
 use Testament::Virt::Vagrant;
 use Testament::Util;
 use Testament::URLFetcher;
+use Testament::Git;
 use Testament::Constants qw(
     CHEF_INSTALLER_URL
     RBENV_REPO
@@ -156,19 +157,14 @@ sub setup_chef {
     unless ( -e $installer ) {
         Testament::URLFetcher->wget(CHEF_INSTALLER_URL, $installer);
     }
-    if ( -e $rbenv ) {
-        my $cwd = getcwd;
-        chdir $rbenv;
-        system('git pull');
-        chdir $ruby_builder;
-        system('git pull');
-        chdir $cwd;
+    if (-e $rbenv) {
+        Testament::Git->pull($rbenv, 'master');
+        Testament::Git->pull($ruby_builder, 'master');
     }
     else {
-        system(sprintf("git clone %s %s", RBENV_REPO, $rbenv));
+        Testament::Git->clone(RBENV_REPO, $rbenv);
         mkdir($rbenv_plugin);
-        mkdir($ruby_builder);
-        system(sprintf("git clone %s %s", RUBYBUILDER_REPO, $ruby_builder));
+        Testament::Git->clone(RUBYBUILDER_REPO, $ruby_builder);
     }
     $class->put( @osparam, $rbenv, '/root/', '-r' );
     $class->put( @osparam, $installer, '/root/' );
