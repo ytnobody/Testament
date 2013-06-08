@@ -1,6 +1,7 @@
 package Testament::Setup::GNU_Linux;
 use strict;
 use warnings;
+use parent 'Testament::Setup::Base';
 
 # This module supports for Ubuntu-server.
 

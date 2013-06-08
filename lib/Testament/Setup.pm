@@ -32,7 +32,7 @@ sub new {
     require File::Spec->catfile( split( '::', $params{submodule} . '.pm' ) );
 
     $params{mirrors} =
-      [ _fetch_mirrors( $params{submodule}->mirror_list_url ) ];
+      [ _fetch_mirrors( $params{submodule} ) ];
     bless {%params}, $class;
 }
 
@@ -85,9 +85,11 @@ sub mirror {
 }
 
 sub _fetch_mirrors {
-    my $mirrors_list_url = shift;
-    my $res              = Testament::URLFetcher->get($mirrors_list_url);
-    ( my @mirrors ) = $res =~ /href\=\"(ftp:\/\/.+?)\"/g;
+    my ($submodule) = @_;
+    my $mirrors_list_url = $submodule->mirror_list_url;
+    my $res         = Testament::URLFetcher->get($mirrors_list_url);
+    my $url_capture = $submodule->url_capture_rule || qr/href\=\"(ftp:\/\/.+?)\"/;
+    ( my @mirrors ) = $res =~ /$url_capture/g;
     return @mirrors;
 }
 

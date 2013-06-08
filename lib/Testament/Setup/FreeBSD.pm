@@ -1,6 +1,7 @@
 package Testament::Setup::FreeBSD;
 use strict;
 use warnings;
+use parent 'Testament::Setup::Base';
 
 sub mirror_list_url { 'http://www.freebsd.org/handbook/mirrors-ftp.html' }
 
