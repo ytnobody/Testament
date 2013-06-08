@@ -58,6 +58,7 @@ sub list {
     my ( $class ) = @_;
     my @running = Testament::Util->running_boxes;
     my $max_l = (sort {$b <=> $a} map {length($_)} keys %$config)[0];
+    $max_l ||= 6; # NOTE <= Length of index
     printf "% ".$max_l."s % 8s % 8s % 8s\n", 'BOX-ID', 'STATUS', 'RAM', 'SSH-PORT';
     for my $id (keys %$config) {
         my $vm = $config->{$id};
