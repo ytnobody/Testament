@@ -27,8 +27,9 @@
    "prereqs" : {
       "build" : {
          "requires" : {
+            "Archive::Tar" : "1.90",
             "Capture::Tiny" : "0",
-            "Scope::Guard" : "0.20",
+            "File::pushd" : "1.005",
             "Test::More" : "0.98"
          }
       },
@@ -61,7 +62,7 @@
             "Log::Minimal" : "0",
             "Net::EmptyPort" : "0",
             "Proc::Simple" : "0",
-            "Scope::Guard" : "0",
+            "Scope::Guard" : "0.20",
             "Time::HiRes" : "0",
             "URI" : "0",
             "perl" : "5.008005"

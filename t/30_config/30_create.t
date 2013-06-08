@@ -1,6 +1,6 @@
 #!perl
 
-# Test Testament::Config
+# Test Testament::OSList
 
 use strict;
 use warnings;
@@ -17,9 +17,9 @@ subtest 'create directories and files' => sub {
     $ENV{TESTAMENT_WORKDIR}   = catfile( $current_dir, 'work_dir' );
     $ENV{TESTAMENT_VMDIR}     = catfile( $current_dir, 'vmdir' );
 
-    require( catfile( dirname( dirname($FindBin::Bin) ), 'lib', 'Testament', 'Config.pm' ) );
+    require( catfile( dirname( dirname($FindBin::Bin) ), 'lib', 'Testament', 'OSList.pm' ) );
 
-    Testament::Config->create();
+    Testament::OSList->create();
     ok( -e $ENV{TESTAMENT_CONF_FILE} );
     ok( -d $ENV{TESTAMENT_WORKDIR} );
     ok( -d $ENV{TESTAMENT_VMDIR} );
