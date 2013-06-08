@@ -11,7 +11,7 @@ use Testament::Virt;
 use Class::Accessor::Lite (
     new => 0,
     ro  => [
-        qw[os_text os_version arch],             # required
+        qw[os_text os_version arch virt_type],   # required
         qw[vmdir identity submodule mirrors],    # non-required
     ],
     rw => [
@@ -57,7 +57,7 @@ sub install {
     $self->digest_file_name($digest_file_name);
     $self->remote_url_builder($remote_url_builder);
     $self->iso_file( &$iso_file_builder($self) );
-    my $virt = Testament::Virt->new( id => $self->identity, arch => $self->arch_short );
+    my $virt = Testament::Virt->new( id => $self->identity, arch => $self->arch_short, subclass => $self->virt_type );
     my $install_image = $self->_fetch_install_image();
     if ($install_image) {
         my $hda = File::Spec->catfile( $self->vmdir, 'hda.img' );

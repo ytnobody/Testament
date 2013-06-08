@@ -23,20 +23,21 @@ our $VERSION = "0.01";
 my $config = Testament::OSList->load;
 
 sub setup {
-    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my ( $class, $os_text, $os_version, $arch, $virt_type ) = @_;
+    $virt_type ||= $Testament::OSList::VM_BACKEND || 'QEMU';
 
     if ($os_text eq 'GNU_Linux') {
         # TODO It's all right?
         ($os_version) = $os_version =~ m/(.*?-.+?)(?:-.*)?/;
     }
 
-    if ($Testament::OSList::VM_BACKEND =~ /^vagrant$/) {
+    if ($virt_type =~ /^vagrant$/) {
         my $vagrant = Testament::Virt::Vagrant->new( os_text => $os_text, os_version => $os_version, arch => $arch );
         $vagrant->install_box();
         return 1;
     }
 
-    my $setup = Testament::Setup->new( os_text => $os_text, os_version => $os_version, arch => $arch );
+    my $setup = Testament::Setup->new( os_text => $os_text, os_version => $os_version, arch => $arch, virt_type => $virt_type );
     my $virt = $setup->do_setup;
     die sprintf('could not setup %s', $os_text) unless $virt;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);

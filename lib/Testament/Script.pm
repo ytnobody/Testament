@@ -43,7 +43,7 @@ sub execute {
 
 sub _CMD_create {
     doc_note('create environment');
-    doc_args('os-test os-version architecture');
+    doc_args('os-test os-version architecture virt-type');
     my ($self) = @_;
 
     my @args = $self->mangle_args;
@@ -54,8 +54,8 @@ sub _CMD_create {
         die 'Interaction mode has not implemented yet.'
     }
 
-    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
-    Testament->setup( $os_text, $os_version, $arch );
+    my ( $os_text, $os_version, $arch, $virt_type ) = @args;
+    Testament->setup( $os_text, $os_version, $arch, $virt_type );
 }
 
 # TODO Is it really necessary?
