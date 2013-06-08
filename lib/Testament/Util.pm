@@ -31,7 +31,7 @@ sub file_slurp {
 
 sub box_identity {
     my ($class, $os_text, $os_version, $arch) = @_;
-    return join('-', $os_text, $os_version, $arch);
+    return join('::', $os_text, $os_version, $arch);
 }
 
 sub vmdir {
