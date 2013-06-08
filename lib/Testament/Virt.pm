@@ -16,7 +16,7 @@ sub boot {
     my $subclass = $self->load_subclass;
     $self->ssh_port(empty_port()) unless $self->ssh_port;
     unless ($self->ram) {
-        $self->ram($ENV{TESTAMENT_VM_RAM} || 256);
+        $self->ram($ENV{TESTAMENT_VM_RAM} || 512);
     }
 
     infof('BOOT hda:%s ram:%sMBytes ssh_port:%d', $self->hda, $self->ram, $self->ssh_port);

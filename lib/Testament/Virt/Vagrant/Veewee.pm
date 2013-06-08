@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use File::Spec;
 use Testament::Git;
-use Testament::Config;
+use Testament::OSList;
 use Testament::Util;
 
 use constant VEEWEE_REPO         => 'git://github.com/jedi4ever/veewee.git';
@@ -16,7 +16,7 @@ sub new {
     Testament::Util->verify_required_commands( ['bundle'] );
 
     my $branch     = 'master';
-    my $veewee_dir = File::Spec->catfile( $Testament::Config::WORKDIR, 'veewee' );
+    my $veewee_dir = File::Spec->catfile( $Testament::OSList::WORKDIR, 'veewee' );
     my $git        = Testament::Git->new();
     $git->clone( VEEWEE_REPO, $veewee_dir );
     $git->checkout( $veewee_dir, $branch );

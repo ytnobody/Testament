@@ -1,4 +1,4 @@
-package Testament::Config;
+package Testament::OSList;
 use strict;
 use warnings;
 use File::Spec;

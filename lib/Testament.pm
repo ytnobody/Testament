@@ -3,7 +3,7 @@ use 5.008005;
 use strict;
 use warnings;
 use Testament::Setup;
-use Testament::Config;
+use Testament::OSList;
 use Testament::Virt;
 use Testament::Virt::Vagrant;
 use Testament::Util;
@@ -20,7 +20,7 @@ use Expect;
 
 our $VERSION = "0.01";
 
-my $config = Testament::Config->load;
+my $config = Testament::OSList->load;
 
 sub setup {
     my ( $class, $os_text, $os_version, $arch ) = @_;
@@ -30,7 +30,7 @@ sub setup {
         ($os_version) = $os_version =~ m/(.*?-.+?)(?:-.*)?/;
     }
 
-    if ($Testament::Config::VM_BACKEND =~ /^vagrant$/) {
+    if ($Testament::OSList::VM_BACKEND =~ /^vagrant$/) {
         my $vagrant = Testament::Virt::Vagrant->new( os_text => $os_text, os_version => $os_version, arch => $arch );
         $vagrant->install_box();
         return 1;
@@ -41,7 +41,7 @@ sub setup {
     die sprintf('could not setup %s', $os_text) unless $virt;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
     $config->{$identify_str} = $virt->as_hashref;
-    Testament::Config->save($config);
+    Testament::OSList->save($config);
     return 1;
 }
 
@@ -110,7 +110,7 @@ sub delete {
     my $vmdir = Testament::Util->vmdir($identify_str);
     system("rm -rfv $vmdir");
     delete $config->{$identify_str};
-    Testament::Config->save($config);
+    Testament::OSList->save($config);
 }
 
 sub file_transfer {
@@ -149,8 +149,8 @@ sub get {
 sub setup_chef {
     my ( $class, $os_text, $os_version, $arch ) = @_;
     my @osparam = ($os_text, $os_version, $arch);
-    my $installer    = File::Spec->catdir($Testament::Config::WORKDIR, 'install-chef-solo.sh');
-    my $rbenv        = File::Spec->catdir($Testament::Config::WORKDIR, '.rbenv');
+    my $installer    = File::Spec->catdir($Testament::OSList::WORKDIR, 'install-chef-solo.sh');
+    my $rbenv        = File::Spec->catdir($Testament::OSList::WORKDIR, '.rbenv');
     my $rbenv_plugin = File::Spec->catdir($rbenv, 'plugins');
     my $ruby_builder = File::Spec->catdir($rbenv_plugin, 'ruby-build');
     unless ( -e $installer ) {
