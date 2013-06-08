@@ -30,8 +30,24 @@ sub file_slurp {
 }
 
 sub box_identity {
-    my ($class, $os_text, $os_version, $arch) = @_;
-    return join('::', $os_text, $os_version, $arch);
+    my $class = shift;
+    if (scalar(grep {defined($_)} @_) >= 3) {
+        return join('::', @_[0..2]);
+    }
+    else {
+        return $_[0];
+    }
+}
+
+sub parse_box_identity {
+    my ($class, $str) = @_;
+    if ($str =~ /^[0-9]+$/) {
+        Testament::OSList->box_by_key($str);
+    }
+    elsif ($str =~ /::/) {
+        my ($os_text, $os_version, $arch) = split('::', $str, 3);
+        return ($os_text, $os_version, $arch);
+    }
 }
 
 sub vmdir {

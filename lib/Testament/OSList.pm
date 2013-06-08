@@ -9,6 +9,7 @@ our $CONF_FILE    = $ENV{TESTAMENT_CONF_FILE}    || File::Spec->catfile($ENV{HOM
 our $WORKDIR      = $ENV{TESTAMENT_WORKDIR}      || dirname($CONF_FILE);
 our $VMDIR        = $ENV{TESTAMENT_VMDIR}        || File::Spec->catdir($WORKDIR,'vm');
 our $VM_BACKEND   = $ENV{TESTAMENT_VM_BACKEND};
+our $CONF;
 
 __PACKAGE__->create unless -e $CONF_FILE;
 
@@ -41,7 +42,8 @@ sub create_conf_file {
 }
 
 sub load {
-    do $CONF_FILE;
+    $CONF ||= do $CONF_FILE;
+    return $CONF;
 }
 
 sub save {
@@ -54,6 +56,18 @@ sub save {
     local $Data::Dumper::Terse = 1;
     print $fh Dumper($var);
     close $fh;
+}
+
+sub boxes {
+    my $class = shift;
+    return sort keys %{$class->load};
+}
+
+sub box_by_key {
+    my ($class, $key) = @_;
+    return unless $key > 0;
+    my @boxes = $class->boxes;
+    return $boxes[$key - 1];
 }
 
 1;

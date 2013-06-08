@@ -60,11 +60,13 @@ sub list {
     my @running = Testament::Util->running_boxes;
     my $max_l = (sort {$b <=> $a} map {length($_)} keys %$config)[0];
     $max_l ||= 6; # NOTE <= Length of index
-    printf "% ".$max_l."s % 8s % 8s % 8s\n", 'BOX-ID', 'STATUS', 'RAM', 'SSH-PORT';
-    for my $id (keys %$config) {
+    printf "% 6s % ".$max_l."s % 8s % 8s % 8s\n", 'KEY', 'BOX-ID', 'STATUS', 'RAM', 'SSH-PORT';
+    my @boxes = Testament::OSList->boxes;
+    for my $i (0..$#boxes) {
+        my $id = $boxes[$i];
         my $vm = $config->{$id};
         my $status = scalar(grep { $_->{cmd} =~ /$id/ } @running) > 0 ? 'RUNNING' : '---';
-        printf "% ".$max_l."s % 8s % 6sMB % 8s\n", $id, $status, $vm->{ram}, $vm->{ssh_port};
+        printf "% 6s % ".$max_l."s % 8s % 6sMB % 8s\n", $i+1, $id, $status, $vm->{ram}, $vm->{ssh_port};
     }
 }
 

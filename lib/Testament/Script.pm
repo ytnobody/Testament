@@ -6,6 +6,7 @@ use utf8;
 use Carp;
 use Testament;
 use Testament::BoxSetting;
+use Testament::Util;
 use Data::Dumper::Concise ();
 
 sub new {
@@ -23,6 +24,15 @@ sub new {
     }, $class;
 }
 
+sub mangle_args {
+    my $self = shift;
+    my $args = $self->{args};
+    return scalar(@$args) < 3 ? 
+        Testament::Util->parse_box_identity($args->[0]) :
+        (shift(@$args), shift(@$args), shift(@$args))
+    ;
+}
+
 sub execute {
     my ($self) = @_;
 
@@ -36,7 +46,7 @@ sub _CMD_create {
     doc_args('os-test os-version architecture');
     my ($self) = @_;
 
-    my @args = @{ $self->{args} };
+    my @args = $self->mangle_args;
     unless (@args) {
 
         # TODO implement!
@@ -73,10 +83,10 @@ sub _CMD_failures {
 }
 
 sub _CMD_boot {
-    doc_note(' boot-up specified box');
+    doc_note('boot-up specified box');
     doc_args('os-test os-version architecture');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->boot( $os_text, $os_version, $arch );
 }
 
@@ -96,7 +106,7 @@ sub _CMD_enter {
     doc_note('enter into box');
     doc_args('os-test os-version architecture');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->enter( $os_text, $os_version, $arch );
 }
 
@@ -104,7 +114,7 @@ sub _CMD_exec {
     doc_note('execute command into box');
     doc_args('os-test os-version architecture commands...');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch, @cmdlist ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch, @cmdlist ) = $self->mangle_args;
     my $cmd = join(' ', @cmdlist);
     Testament->exec( $os_text, $os_version, $arch, $cmd );
 }
@@ -113,7 +123,7 @@ sub _CMD_kill {
     doc_note('kill specified box');
     doc_args('os-test os-version architecture');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->kill( $os_text, $os_version, $arch);
 }
 
@@ -121,7 +131,7 @@ sub _CMD_delete {
     doc_note('delete specified box');
     doc_args('os-test os-version architecture');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->delete( $os_text, $os_version, $arch);
 }
 
@@ -129,7 +139,7 @@ sub _CMD_put {
     doc_note('put file into specified box');
     doc_args('os-test os-version architecture source-file dest-path');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch, $src, $dst ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch, $src, $dst ) = $self->mangle_args;
     Testament->put( $os_text, $os_version, $arch, $src, $dst );
 }
 
@@ -137,7 +147,7 @@ sub _CMD_get {
     doc_note('get file from specified box');
     doc_args('os-test os-version architecture source-file dest-path');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch, $src, $dst ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch, $src, $dst ) = $self->mangle_args;
     Testament->get( $os_text, $os_version, $arch, $src, $dst );
 }
 
@@ -145,7 +155,7 @@ sub _CMD_setup_chef {
     doc_note('setup chef-solo into specified box');
     doc_args('os-test os-version architecture');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->setup_chef( $os_text, $os_version, $arch );
 }
 
