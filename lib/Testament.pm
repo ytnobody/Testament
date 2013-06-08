@@ -202,6 +202,18 @@ And, you can create a new box
 
     $ testament create OpenBSD 5.1 OpenBSD.i386-openbsd
 
+To show boxes-list, 
+
+    $ testament list
+     KEY                             BOX-ID   STATUS      RAM SSH-PORT
+       1 OpenBSD::5.1::OpenBSD.i386-openbsd      ---    256MB    50954
+
+To boot a exists box,
+
+    $ testament boot OpenBSD 5.1 OpenBSD.i386-openbsd
+    ### or
+    $ testament boot 1
+
 =head1 DESCRIPTION
 
 Testament is a testing environment builder tool.
@@ -214,33 +226,33 @@ Testament is a testing environment builder tool.
 
 =over 4
 
-=item boot [os-test os-version architecture] : boot-up specified box
+=item boot ([boxkey] or [os-test os-version architecture]) : boot-up specified box
 
-=item create [os-test os-version architecture] : create environment
+=item create ([boxkey] or [os-test os-version architecture]) : create environment
 
-=item put [os-test os-version architecture source-file dest-path] : put file into specified box
+=item put ([boxkey] or [os-test os-version architecture source-file dest-path]) : put file into specified box
 
-=item help [(no arguments)] : show this help
+=item help ([boxkey] or [(no arguments)]) : show this help
 
-=item failures [cpan-module-name] : fetch and show boxes that failures testing
+=item failures ([boxkey] or [cpan-module-name]) : fetch and show boxes that failures testing
 
-=item get [os-test os-version architecture source-file dest-path] : get file from specified box
+=item get ([boxkey] or [os-test os-version architecture source-file dest-path]) : get file from specified box
 
-=item kill [os-test os-version architecture] : kill specified box
+=item kill ([boxkey] or [os-test os-version architecture]) : kill specified box
 
-=item setup_chef [os-test os-version architecture] : setup chef-solo into specified box
+=item setup_chef ([boxkey] or [os-test os-version architecture]) : setup chef-solo into specified box
 
 =item list [(no arguments)] : show boxes in your machine
 
-=item install [os-test os-version architecture] : alias for create
+=item install ([boxkey] or [os-test os-version architecture]) : alias for create
 
-=item enter [os-test os-version architecture] : enter into box
+=item enter ([boxkey] or [os-test os-version architecture]) : enter into box
 
 =item version [(no arguments)] : show testament version
 
-=item delete [os-test os-version architecture] : delete specified box
+=item delete ([boxkey] or [os-test os-version architecture]) : delete specified box
 
-=item exec [os-test os-version architecture commands...] : execute command into box
+=item exec ([boxkey] or [os-test os-version architecture commands...]) : execute command into box
 
 =back
 

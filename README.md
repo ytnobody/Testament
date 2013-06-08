@@ -17,6 +17,18 @@ And, you can create a new box
 
     $ testament create OpenBSD 5.1 OpenBSD.i386-openbsd
 
+To show boxes-list, 
+
+    $ testament list
+     KEY                             BOX-ID   STATUS      RAM SSH-PORT
+       1 OpenBSD::5.1::OpenBSD.i386-openbsd      ---    256MB    50954
+
+To boot a exists box,
+
+    $ testament boot OpenBSD 5.1 OpenBSD.i386-openbsd
+    ### or
+    $ testament boot 1
+
 # DESCRIPTION
 
 Testament is a testing environment builder tool.
@@ -27,20 +39,20 @@ Testament is a testing environment builder tool.
 
 ## subcommand
 
-- boot \[os-test os-version architecture\] : boot-up specified box
-- create \[os-test os-version architecture\] : create environment
-- put \[os-test os-version architecture source-file dest-path\] : put file into specified box
-- help \[(no arguments)\] : show this help
-- failures \[cpan-module-name\] : fetch and show boxes that failures testing
-- get \[os-test os-version architecture source-file dest-path\] : get file from specified box
-- kill \[os-test os-version architecture\] : kill specified box
-- setup\_chef \[os-test os-version architecture\] : setup chef-solo into specified box
+- boot (\[boxkey\] or \[os-test os-version architecture\]) : boot-up specified box
+- create (\[boxkey\] or \[os-test os-version architecture\]) : create environment
+- put (\[boxkey\] or \[os-test os-version architecture source-file dest-path\]) : put file into specified box
+- help (\[boxkey\] or \[(no arguments)\]) : show this help
+- failures (\[boxkey\] or \[cpan-module-name\]) : fetch and show boxes that failures testing
+- get (\[boxkey\] or \[os-test os-version architecture source-file dest-path\]) : get file from specified box
+- kill (\[boxkey\] or \[os-test os-version architecture\]) : kill specified box
+- setup\_chef (\[boxkey\] or \[os-test os-version architecture\]) : setup chef-solo into specified box
 - list \[(no arguments)\] : show boxes in your machine
-- install \[os-test os-version architecture\] : alias for create
-- enter \[os-test os-version architecture\] : enter into box
+- install (\[boxkey\] or \[os-test os-version architecture\]) : alias for create
+- enter (\[boxkey\] or \[os-test os-version architecture\]) : enter into box
 - version \[(no arguments)\] : show testament version
-- delete \[os-test os-version architecture\] : delete specified box
-- exec \[os-test os-version architecture commands...\] : execute command into box
+- delete (\[boxkey\] or \[os-test os-version architecture\]) : delete specified box
+- exec (\[boxkey\] or \[os-test os-version architecture commands...\]) : execute command into box
 
 # LICENSE
 
