@@ -46,8 +46,7 @@ sub _CMD_create {
     doc_args('os-test os-version architecture');
     my ($self) = @_;
 
-    my @args = $self->mangle_args;
-    unless (@args) {
+    unless ( @{ $self->{args} }) {
 
         # TODO implement!
         # interaction mode
