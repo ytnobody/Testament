@@ -32,7 +32,7 @@ sub file_slurp {
 sub box_identity {
     my $class = shift;
     if (scalar(grep {defined($_)} @_) >= 3) {
-        return join('::', @_[0..2]);
+        return join('__', @_[0..2]);
     }
     else {
         return $_[0];
@@ -44,8 +44,8 @@ sub parse_box_identity {
     if ($str =~ /^[0-9]+$/) {
         Testament::OSList->box_by_key($str);
     }
-    elsif ($str =~ /::/) {
-        my ($os_text, $os_version, $arch) = split('::', $str, 3);
+    elsif ($str =~ /__/) {
+        my ($os_text, $os_version, $arch) = split('__', $str, 3);
         return ($os_text, $os_version, $arch);
     }
 }

@@ -60,7 +60,7 @@ sub save {
 
 sub boxes {
     my $class = shift;
-    return sort keys %{$class->load};
+    sort keys %{$class->load};
 }
 
 sub box_by_key {

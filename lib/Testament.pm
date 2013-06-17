@@ -79,16 +79,23 @@ sub exec {
     my @cmdlist = ('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
     push @cmdlist, $cmd if defined $cmd;
     my $spawn = Expect->spawn(@cmdlist);
+    my $pass = 0;
     $spawn->expect(SPAWN_TIMEOUT,
-        ["(yes/no)?" => sub {
+        [qr/\(yes\/no\)/ => sub {
             shift->send("yes\n");
         } ],
-    );
-    $spawn->expect(SPAWN_TIMEOUT,
         [qr/sword/ => sub {
             shift->send("testament\n");
+            $pass = 1;
         } ],
     );
+    unless ($pass) {
+        $spawn->expect(SPAWN_TIMEOUT,
+            [qr/sword/ => sub {
+                shift->send("testament\n");
+            } ],
+        );
+    };
     $spawn->interact;
     $spawn->soft_close;
 }
