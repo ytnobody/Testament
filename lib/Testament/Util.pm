@@ -42,12 +42,10 @@ sub box_identity {
 sub parse_box_identity {
     my ($class, $str) = @_;
     if ($str =~ /^[0-9]+$/) {
-        Testament::OSList->box_by_key($str);
+        $str = Testament::OSList->box_by_key($str);
     }
-    elsif ($str =~ /__/) {
-        my ($os_text, $os_version, $arch) = split('__', $str, 3);
-        return ($os_text, $os_version, $arch);
-    }
+    my ($os_text, $os_version, $arch) = split('__', $str, 3);
+    return ($os_text, $os_version, $arch);
 }
 
 sub vmdir {
