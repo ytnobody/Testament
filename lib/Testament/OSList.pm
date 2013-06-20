@@ -1,6 +1,7 @@
 package Testament::OSList;
 use strict;
 use warnings;
+use File::Path (); # TODO I wish I can use the Testament::Util...
 use File::Spec;
 use File::Basename 'dirname';
 use Data::Dumper;
@@ -22,13 +23,13 @@ sub create {
 
 sub create_workdir {
     unless (-e $WORKDIR) {
-        mkdir $WORKDIR or die 'could not create directory '.$WORKDIR;
+        File::Path::mkpath $WORKDIR or die 'could not create directory '.$WORKDIR;
     }
 }
 
 sub create_vmdir {
     unless (-e $VMDIR) {
-        mkdir $VMDIR or die 'could not create directory '.$VMDIR;
+        File::Path::mkpath $VMDIR or die 'could not create directory '.$VMDIR;
     }
 }
 
