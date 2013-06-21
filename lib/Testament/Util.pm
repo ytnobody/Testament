@@ -5,6 +5,7 @@ use Cwd;
 use Log::Minimal;
 use File::Spec;
 use Scope::Guard;
+use IO::Handle;
 use Testament::OSList;
 
 sub mkdir {
@@ -98,4 +99,13 @@ sub verify_required_commands {
         }
     }
 }
+
+sub confirm {
+    my ($class, $message, $default) = @_;
+    autoflush STDOUT, 1;
+    print $message. " [$default] ";
+    autoflush STDOUT, 0;
+    getline STDIN;
+}
+
 1;

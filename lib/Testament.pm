@@ -117,11 +117,20 @@ sub delete {
     my ( $class, $os_text, $os_version, $arch ) = @_;
     my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
     my ( $proc ) = Testament::Util->is_box_running($identify_str);
-    $class->kill($os_text, $os_version, $arch) if $proc;
+    if ( $proc ) {
+        if ( Testament::Util->confirm("box '$identify_str' is running. Do you kill it ?", 'n') =~ /^y/i ) {
+            $class->kill($os_text, $os_version, $arch);
+        }
+        else {
+            die "aborted";
+        }
+    }
     my $vmdir = Testament::Util->vmdir($identify_str);
-    system("rm -rfv $vmdir");
-    delete $config->{$identify_str};
-    Testament::OSList->save($config);
+    if ( Testament::Util->confirm("really want to remove bot '$identify_str' ?", 'n') =~ /^y/i ) {
+        system("rm -rfv $vmdir");
+        delete $config->{$identify_str};
+        Testament::OSList->save($config);
+    }
 }
 
 sub file_transfer {
