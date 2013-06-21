@@ -4,7 +4,7 @@
       "ytnobody <ytnobody aaaaatttttt gmail>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -78,7 +78,7 @@
       "homepage" : "https://github.com/ytnobody/Testament",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/ytnobody/Testament",
+         "url" : "git://github.com/ytnobody/Testament.git",
          "web" : "https://github.com/ytnobody/Testament"
       }
    },
@@ -86,7 +86,7 @@
    "x_contributors" : [
       "ichigotake <k.wisiiy@gmail.com>",
       "root <root@ubuntu.(none)>",
-      "ytnobody <ytnobody@gmail.com>",
-      "moznion <moznion@gmail.com>"
+      "moznion <moznion@gmail.com>",
+      "ytnobody <ytnobody@gmail.com>"
    ]
 }
