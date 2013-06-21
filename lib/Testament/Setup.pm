@@ -31,7 +31,8 @@ sub new {
 
     require File::Spec->catfile( split( '::', $params{submodule} . '.pm' ) );
 
-    $params{mirrors} = [ _fetch_mirrors($params{submodule}->mirror_list_url($self)) ];
+    $params{mirrors} =
+      [ _fetch_mirrors( $params{submodule}->mirror_list_url($self) ) ]
     bless {%params}, $class;
 }
 
