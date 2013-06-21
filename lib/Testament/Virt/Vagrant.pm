@@ -28,7 +28,7 @@ sub install_box {
     my $guard = Testament::Util->will_be_right_back( $veewee->{veewee_dir} );
 
     # export box as Virtual Box style.
-    mkdir('boxes');
+    Testament::Util->mkdir('boxes');
     my $target = sprintf( 'boxes/%s.box', $box_info->{os} );
     unless ( -e $target ) {
         system(

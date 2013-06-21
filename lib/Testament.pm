@@ -182,7 +182,7 @@ sub setup_chef {
     }
     else {
         Testament::Git->clone(RBENV_REPO, $rbenv);
-        mkdir($rbenv_plugin);
+        Testament::Util->mkdir($rbenv_plugin);
         Testament::Git->clone(RUBYBUILDER_REPO, $ruby_builder);
     }
     $class->put( @osparam, $rbenv, '/root/', '-r' );
@@ -218,7 +218,7 @@ And, you can create a new box
 
     $ testament create OpenBSD 5.1 OpenBSD.i386-openbsd
 
-To show boxes-list, 
+To show boxes-list,
 
     $ testament list
      KEY                             BOX-ID   STATUS      RAM SSH-PORT
