@@ -15,7 +15,7 @@ use Class::Accessor::Lite (
         qw[vmdir identity submodule mirrors],    # non-required
     ],
     rw => [
-        qw[iso_file digest_file_name remote_url_builder arch_short arch_opt ],
+        qw[iso_file digest_file_name remote_url_builder arch_short arch_opt digest_sha_type digest_matcher],
     ],
 );
 
@@ -31,32 +31,21 @@ sub new {
 
     require File::Spec->catfile( split( '::', $params{submodule} . '.pm' ) );
 
-    $params{mirrors} =
-      [ _fetch_mirrors( $params{submodule}->mirror_list_url ) ];
-    bless {%params}, $class;
+    my $self = bless {%params}, $class;
+    $self->{mirrors} = [ $params{submodule}->mirrors($self) ];
+    return $self;
 }
 
 sub do_setup {
     my $self = shift;
     Testament::Util->mkdir( $self->vmdir );
-    return $self->submodule->install($self);
+    $self->submodule->prepare_install($self);
+    $self->install;
 }
 
 sub install {
-    my ( $self, $arch_matcher, $iso_file_builder, $digest_file_name,
-        $remote_url_builder, $boot_opt, $boot_wait ) = @_;
+    my $self = shift;
 
-    $boot_opt ||= '';
-    $boot_wait ||= 5;
-
-    # arch_short: e.g. "i386", "amd64", etc...
-    # arch_opt:   e.g. "thread-multi", "int64", etc...
-    my ( $arch_short, $arch_opt ) = $self->arch =~ $arch_matcher;
-    $self->arch_short($arch_short);
-    $self->arch_opt($arch_opt);
-    $self->digest_file_name($digest_file_name);
-    $self->remote_url_builder($remote_url_builder);
-    $self->iso_file( &$iso_file_builder($self) );
     my $virt = Testament::Virt->new( id => $self->identity, arch => $self->arch_short );
     my $install_image = $self->_fetch_install_image();
     if ($install_image) {
@@ -64,7 +53,7 @@ sub install {
         $virt->create_image($hda);
         $virt->hda($hda);
         $virt->cdrom($install_image);
-        $virt->boot($boot_opt, $boot_wait);
+        $virt->boot();
         $virt->{cdrom} = undef;
         return $virt;
     }
@@ -99,8 +88,7 @@ sub _fetch_install_image {
 sub _validate_install_image {
     my ($self) = @_;
 
-    my $digest_file =
-      File::Spec->catfile( $self->vmdir, $self->digest_file_name );
+    my $digest_file = File::Spec->catfile( $self->vmdir, $self->digest_file_name );
     my $url = &{ $self->remote_url_builder }( $self, $self->digest_file_name );
     Testament::URLFetcher->wget( $url, $digest_file ) unless -e $digest_file;
     my $install_image = $self->_get_downloaded_img_path();
@@ -112,18 +100,23 @@ sub _validate_install_image {
 sub _validate_img_file_by_SHA2 {
     my ( $self, $install_image, $digest_file ) = @_;
 
-    my ( $sha_type, $filename, $sha2 );
+    my $results;
+    my $digest_matcher = $self->digest_matcher || sub {
+        my ($line, $results) = @_;
+        ($results->{sha_type}, $results->{filename}, $results->{sha2}) = $line =~ qr/^SHA(\d\d\d) \((.+)\) = ([0-9a-f]+)$/;
+        return $results;
+    };
+
+use Data::Dumper;
     for my $line ( split /\n/, Testament::Util->file_slurp($digest_file) ) {
         chomp $line;
-        $sha_type = $filename = $sha2 = undef;
-        ( $sha_type, $filename, $sha2 ) = $line =~ /^SHA(\d\d\d) \((.+)\) = ([0-9a-f]+)$/;
-        unless ($filename) {
-            # NOTE For Linux (Ubuntu). I think that this way is a little evil...
-            ( $sha2, $filename ) = $line =~ /([0-9a-f]+)\s*\*(.+)/;
-            ($sha_type) = basename($digest_file) =~ /(\d\d\d)/;
-        }
-        last if $filename eq $self->iso_file;
+        $results = $digest_matcher->($line, $results);
+warn Dumper( $results );
+        last if $results->{filename} eq $self->iso_file;
     }
+    my $sha_type = $self->digest_sha_type || $results->{sha_type};
+    my $sha2     = $results->{sha2};
+    my $filename = $results->{filename};
     unless ( $sha2 eq $self->_calculate_SHA2_of_file($install_image, $sha_type) ) {
         critf( 'sha%s digest is not match : wants = %s', $sha_type, $sha2 );
         return;

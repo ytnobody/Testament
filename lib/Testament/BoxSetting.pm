@@ -7,8 +7,8 @@ use Furl;
 use JSON;
 use List::Util qw/first/;
 
-use constant SUCCESS_CODE => 200;
 use constant SUPPORTED_OS => ( 'OpenBSD', 'FreeBSD', 'NetBSD', 'GNU/Linux' );    # TODO
+use constant TIMEOUT => 60;
 
 sub fetch_failed_boxes {
     my ( $distro, $version ) = @_;
@@ -37,16 +37,15 @@ sub _download_json_test_report {
 
     my $download;
     $download = sub {
-        my $response = Furl->new()->get($url);    # TODO configurable timeout?
-             # TODO add handling when it returns 404
-        if ( $response->{code} != SUCCESS_CODE ) {
+        my $response = Furl->new(agent => __PACKAGE__, timeout => TIMEOUT)->get($url);
+        unless ($response->is_success) {
+            warn sprintf("remote server said '%s (CODE=%s)'", do{(my $content = $response->content) =~ s/\n//g; $content}, $response->code);
             if ( ++$error_count > $permissible_error_count ) {
                 croak "Connection timeout "
-                  . "(Attempt $permissible_error_count times)." # TODO consider!
+               . "(Attempt $permissible_error_count times)." # TODO consider!
             }
-            return $download->();
         }
-        return $response->{content};
+        return $response->content;
     };
 
     return $download->();

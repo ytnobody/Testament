@@ -12,7 +12,8 @@ our $AGENT ||= Furl->new(
 
 sub get {
     my ($class, $url) = @_;
-    infof('fetching %s', $url);
+    my ($caller, $caller_file, $line) = caller;
+    infof('fetching %s (called in %s:%s)', $url, $caller_file, $line);
     my $res = $AGENT->get($url);
     unless ( $res->is_success ) {
         critf('failed to fetching : remote server said %s', $res->message);
@@ -23,7 +24,8 @@ sub get {
 
 sub wget {
     my ($class, $url, $saveto) = @_;
-    infof('WGETing %s', $url);
+    my ($caller, $caller_file, $line) = caller;
+    infof('WGETing %s (called in %s:%s)', $url, $caller_file, $line);
     if( my $code = system("wget $url --output-document=$saveto") ) {
         critf('failed to fetching : exit code = %s', $code);
         die;

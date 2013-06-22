@@ -23,6 +23,8 @@ sub prepare_install {
     ### implement example
 
     ### set arch_short and arch_opt
+    ### arch_short: e.g. "i386", "amd64", etc...
+    ### arch_opt:   e.g. "thread-multi", "int64", etc...
     # ($setup->{arch_short}, $setup->{arch_opt}) = $setup->arch =~ qr[^OpenBSD^.(.+)-openbsd(?:-(.+))?]);
 
     ### set iso_file
@@ -33,12 +35,9 @@ sub prepare_install {
 
     ### specify logic that resolves full url for specific file
     # $setup->remote_url_builder(sub {
-    #     my $filename = shift;
+    #     my ($setup, $filename) = @_;
     #     return sprintf("%s/%s/%s/%s", $setup->mirror, $setup->os_version, $setup->arch_short, $filename);
     # });
-
-    ### run install
-    # $setup->install;
 }
 
 1;

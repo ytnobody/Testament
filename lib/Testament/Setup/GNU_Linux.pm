@@ -1,45 +1,38 @@
 package Testament::Setup::GNU_Linux;
 use strict;
 use warnings;
+use parent 'Testament::Setup::Interface';
+use Testament::URLFetcher;
 
-# This module supports for Ubuntu-server.
+# This module supports for centos6.
 
-use constant UBUNTU_VERSION => '13.04';
-sub mirror_list_url { 'https://launchpad.net/ubuntu/+cdmirrors' }
+use constant RELEASE => 6.4;
 
-sub install {
+sub mirrors {
+    my ($clss, $setup) = @_;
+    ($setup->{arch_short}, $setup->{arch_opt}) = $setup->arch =~ qr/^(.*)-linux(?:-(.*))?/;
+    my $mirror_list = sprintf('http://mirrorlist.centos.org/?release=%s&arch=%s&repo=os', RELEASE, $setup->arch_short);
+    my $res   = Testament::URLFetcher->get($mirror_list);
+    return (map { $_ =~ s/\n//g; $_; } split(/\n/, $res));
+}
+
+sub prepare_install {
     my ( $class, $setup ) = @_;
 
-    my $arch_matcher     = qr/^(.*)-linux(?:-(.*))?/;
-    my $digest_file_name = 'SHA256SUMS';
+    $setup->digest_file_name('sha256sum.txt');
+    $setup->digest_sha_type('256');
+    $setup->digest_matcher(sub {
+        my ($line, $results) = @_;
+        ($results->{sha2}, $results->{filename}) = $line =~ /^([0-9a-f]+)\s+(.+)/;
+        return $results;
+    });
 
-    my $iso_file_builder = sub {
-        my ($setup) = @_;
+    $setup->iso_file(sprintf('CentOS-%s-%s-minimal.iso', RELEASE, $setup->arch_short));
 
-        my $arch_short = $setup->arch_short;
-        $arch_short = 'amd64' if $arch_short eq 'x86_64';
-        my $iso_file =
-          'ubuntu-' . UBUNTU_VERSION . '-server-' . $arch_short . '.iso';
-        return $iso_file;
-    };
-
-    my $remote_url_builder = sub {
-        my ( $setup, $filename ) = @_;
-        my $country_matcher = sub {
-            my $country = shift;
-            qr!^.*?\.$country!;
-        };
-
-        ( my $os_version = $setup->os_version ) =~ s/-.*//;
-
-        return sprintf( "%s/%s/%s",
-            $setup->mirror($country_matcher),
-            UBUNTU_VERSION, $filename );
-    };
-
-    $setup->install(
-        $arch_matcher,     $iso_file_builder,
-        $digest_file_name, $remote_url_builder
-    );
+    $setup->remote_url_builder(sub {
+        my ($setup, $filename) = @_;
+        (my $mirror = $setup->mirror) =~ s/\/os\//\/isos\//;
+        sprintf("%s/%s", $mirror, $filename);
+    });
 }
 1;

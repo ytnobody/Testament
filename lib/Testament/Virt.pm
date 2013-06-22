@@ -17,8 +17,11 @@ sub boot {
     my $subclass = $self->load_subclass;
     $self->ssh_port(empty_port()) unless $self->ssh_port;
     unless ($self->ram) {
-        my $ram = Testament::Util->confirm('Specify RAM size that allocates to this box', $ENV{TESTAMENT_VM_RAM} || 512);
-        $ram =~ s/(\r|\n)//g;
+        my ($ram) = (Testament::Util->confirm(
+            'Specify RAM size that allocates to this box', 
+            $ENV{TESTAMENT_VM_RAM} || 512
+        )) =~ m/^([0-9]+)/;
+        $ram ||= $ENV{TESTAMENT_VM_RAM} || 512;
         $self->ram($ram);
     }
 

@@ -1,27 +1,26 @@
 package Testament::Setup::NetBSD;
 use strict;
 use warnings;
+use parent 'Testament::Setup::Interface';
 
-sub mirror_list_url { 'http://www.netbsd.org/mirrors/' }
+our $MIRROR_LIST = 'http://www.netbsd.org/mirrors/';
 
-sub install {
-    my ( $class, $setup ) = @_;
+sub mirrors {
+    my $class = shift;
+    my $res   = Testament::URLFetcher->get($MIRROR_LIST);
+    return ( $res =~ /href\=\"(ftp:\/\/.+?)\"/g );
+}
 
-    my $arch_matcher     = qr/^(.*)-netbsd(?:-(.*))?/;
-    my $digest_file_name = 'SHA512';
+sub prepare_install {
+    my ($class, $setup) = @_;
 
-    my $iso_file_builder = sub {
-        my ($setup) = @_;
+    ($setup->{arch_short}, $setup->{arch_opt}) = $setup->arch =~ qr/^(.*)-netbsd(?:-(.*))?/;
 
-        my $iso_file =
-            'NetBSD-'
-          . $setup->os_version . '-'
-          . $setup->arch_short
-          . '.iso';
-        return $iso_file;
-    };
+    $setup->digest_file_name('SHA512');
 
-    my $remote_url_builder = sub {
+    $setup->iso_file(sprintf('NetBSD-%s-%s.iso', $setup->os_version, $setup->arch_short));
+
+    $setup->remote_url_builder(sub {
         my ( $setup, $filename ) = @_;
         my $country_matcher = sub {
             my $country = shift;
@@ -35,11 +34,6 @@ sub install {
             $setup->mirror($country_matcher, $ftp_regexp), $setup->os_text, $setup->os_version,
             $filename
         );
-    };
-
-    $setup->install(
-        $arch_matcher,     $iso_file_builder,
-        $digest_file_name, $remote_url_builder
-    );
+    });
 }
 1;

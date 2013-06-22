@@ -25,10 +25,8 @@ sub prepare_install {
     });
 
     $setup->remote_url_builder(sub {
-        my $filename = shift;
+        my ($setup, $filename) = @_;
         sprintf("%s/%s/%s/%s", $setup->mirror, $setup->os_version, $setup->arch_short, $filename);
     });
-
-    $setup->install;
 }
 1;
