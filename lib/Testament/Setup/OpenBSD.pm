@@ -24,10 +24,10 @@ sub prepare_install {
         $iso_file;
     });
 
-    $setup->remote_url_builder( sub {
+    $setup->remote_url_builder(sub {
         my $filename = shift;
         sprintf("%s/%s/%s/%s", $setup->mirror, $setup->os_version, $setup->arch_short, $filename);
-    };
+    });
 
     $setup->install;
 }
