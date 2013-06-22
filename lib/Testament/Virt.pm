@@ -9,6 +9,7 @@ use Class::Accessor::Lite (
 use Net::EmptyPort 'empty_port';
 use Log::Minimal;
 use Proc::Simple;
+use Testament::Util;
 
 sub boot {
     my ($self, $boot_opt, $boot_wait) = @_;
@@ -16,7 +17,9 @@ sub boot {
     my $subclass = $self->load_subclass;
     $self->ssh_port(empty_port()) unless $self->ssh_port;
     unless ($self->ram) {
-        $self->ram($ENV{TESTAMENT_VM_RAM} || 512);
+        my $ram = Testament::Util->confirm('Specify RAM size that allocates to this box', $ENV{TESTAMENT_VM_RAM} || 512);
+        $ram =~ s/(\r|\n)//g;
+        $self->ram($ram);
     }
 
     infof('BOOT hda:%s ram:%sMBytes ssh_port:%d', $self->hda, $self->ram, $self->ssh_port);
@@ -27,7 +30,8 @@ sub boot {
     my $master_proc = Proc::Simple->new;
     my $slave_proc = Proc::Simple->new;
     $master_proc->redirect_output('/dev/null', undef);
-    $slave_proc->redirect_output('/dev/null', '/dev/null');
+    # XXX visible slave error
+    # $slave_proc->redirect_output('/dev/null', '/dev/null');
     $master_proc->start(sub {
         $SIG{TERM} = $SIG{INT} = $SIG{KILL} = sub {
             $slave_proc->kill;

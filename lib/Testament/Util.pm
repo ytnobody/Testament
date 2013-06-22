@@ -2,16 +2,18 @@ package Testament::Util;
 use strict;
 use warnings;
 use Cwd;
+use File::Path ();
 use Log::Minimal;
 use File::Spec;
 use Scope::Guard;
+use IO::Handle;
 use Testament::OSList;
 
 sub mkdir {
     my ($class, $path) = @_;
     return 1 if -e $path;
     infof('mkdir %s', $path);
-    unless( mkdir $path ) {
+    unless( File::Path::mkpath $path ) {
         critf('failed to mkdir %s', $path);
         die;
     }
@@ -98,4 +100,13 @@ sub verify_required_commands {
         }
     }
 }
+
+sub confirm {
+    my ($class, $message, $default) = @_;
+    autoflush STDOUT, 1;
+    print $message. " [$default] ";
+    autoflush STDOUT, 0;
+    getline STDIN;
+}
+
 1;

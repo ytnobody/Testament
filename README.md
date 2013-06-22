@@ -17,7 +17,7 @@ And, you can create a new box
 
     $ testament create OpenBSD 5.1 OpenBSD.i386-openbsd
 
-To show boxes-list, 
+To show boxes-list,
 
     $ testament list
      KEY                             BOX-ID   STATUS      RAM SSH-PORT
