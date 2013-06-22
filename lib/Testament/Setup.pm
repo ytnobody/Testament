@@ -84,13 +84,6 @@ sub mirror {
     return Testament::FastestMirror->pickup( \@mirrors, $country_matcher );
 }
 
-sub _fetch_mirrors {
-    my $mirrors_list_url = shift;
-    my $res              = Testament::URLFetcher->get($mirrors_list_url);
-    ( my @mirrors ) = $res =~ /href\=\"(ftp:\/\/.+?)\"/g;
-    return @mirrors;
-}
-
 sub _fetch_install_image {
     my ($self) = @_;
 
