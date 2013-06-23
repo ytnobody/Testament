@@ -9,4 +9,4 @@ use Test::More;
 eval "use Test::LocalFunctions";
 plan skip_all => "Test::LocalFunctions required for testing variables" if $@;
 
-all_local_functions_ok();
+all_local_functions_ok({ignore_functions => [qr/\A_CMD.*/]});
