@@ -107,11 +107,9 @@ sub _validate_img_file_by_SHA2 {
         return $results;
     };
 
-use Data::Dumper;
     for my $line ( split /\n/, Testament::Util->file_slurp($digest_file) ) {
         chomp $line;
         $results = $digest_matcher->($line, $results);
-warn Dumper( $results );
         last if $results->{filename} eq $self->iso_file;
     }
     my $sha_type = $self->digest_sha_type || $results->{sha_type};
