@@ -16,8 +16,8 @@ sub fetch_failed_boxes {
     # TODO consider messages.
     $distro or croak "fetch_failed_boxes requires module name.";
 
-    my $json =
-      _download_json_test_report( _construct_report_json_url($distro) );
+    my $json = _download_json_test_report( _construct_report_json_url($distro) );
+    croak "could not fetch test report for $distro" unless $json;
     $json = JSON::decode_json($json);
 
     my @fail_boxes = grep { $_->{status} eq 'FAIL' } @$json;
@@ -38,14 +38,20 @@ sub _download_json_test_report {
     my $download;
     $download = sub {
         my $response = Furl->new(agent => __PACKAGE__, timeout => TIMEOUT)->get($url);
-        unless ($response->is_success) {
-            warn sprintf("remote server said '%s (CODE=%s)'", do{(my $content = $response->content) =~ s/\n//g; $content}, $response->code);
-            if ( ++$error_count > $permissible_error_count ) {
-                croak "Connection timeout "
-               . "(Attempt $permissible_error_count times)." # TODO consider!
+        unless (ref($response) eq 'Furl::Response') {
+            warn 'Got illegal responce';
+            $error_count++;
+        }
+        else {
+            unless ($response->is_success) {
+                warn sprintf("remote server said '%s (CODE=%s)'", do{(my $content = $response->content) =~ s/\n//g; $content}, $response->code);
+                $error_count++;
             }
         }
-        return $response->content;
+        if ( $error_count > $permissible_error_count ) {
+            croak "Connection timeout (Attempt $permissible_error_count times)." # TODO consider!
+        }
+        return $response->content if ref($response) eq 'Furl::Response';
     };
 
     return $download->();
