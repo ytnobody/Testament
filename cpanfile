@@ -22,3 +22,9 @@ on 'build' => sub {
     requires 'File::pushd',   '1.005';
     requires 'Archive::Tar',  '1.90';
 };
+
+on develop => sub {
+    requires 'Test::Perl::Critic';
+    requires 'Test::Vars';
+    requires 'Test::LocalFunctions', '0.20';
+};
