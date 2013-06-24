@@ -241,7 +241,7 @@ Testament is a testing environment builder tool.
 
 =item kill ([boxkey] or [os-test os-version architecture]) : kill specified box
 
-=item setup_chef ([boxkey] or [os-test os-version architecture]) : setup chef-solo into specified box
+=item install_perl ([os-test os-version architecture version]) : setup specified version perl into specified box
 
 =item list [(no arguments)] : show boxes in your machine
 
