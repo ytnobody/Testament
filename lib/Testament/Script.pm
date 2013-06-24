@@ -150,12 +150,12 @@ sub _CMD_get {
     Testament->get( $os_text, $os_version, $arch, $src, $dst );
 }
 
-sub _CMD_setup_chef {
-    doc_note('setup chef-solo into specified box');
-    doc_args('os-test os-version architecture');
+sub _CMD_install_perl {
+    doc_note('setup specified version perl into specified box');
+    doc_args('os-test os-version architecture version');
     my ($self) = @_;
-    my ( $os_text, $os_version, $arch ) = $self->mangle_args;
-    Testament->setup_chef( $os_text, $os_version, $arch );
+    my ( $os_text, $os_version, $arch, $version ) = $self->mangle_args;
+    Testament->install_perl( $os_text, $os_version, $arch, $version );
 }
 
 # document generator (please better thing!)

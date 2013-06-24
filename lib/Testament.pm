@@ -77,7 +77,10 @@ sub exec {
     my $box_conf = $config->{$identify_str};
     $box_conf->{id} = $identify_str;
     my @cmdlist = ('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
-    push @cmdlist, $cmd if defined $cmd;
+    if (defined $cmd) {
+        $cmd = ". ~/.bash_profile; ( $cmd )";
+        push @cmdlist, $cmd;
+    }
     my $spawn = Expect->spawn(@cmdlist);
     my $pass = 0;
     $spawn->expect(SPAWN_TIMEOUT,
@@ -166,28 +169,10 @@ sub get {
     $class->file_transfer($os_text, $os_version, $arch, $src, $dst, 'get', @opts);
 }
 
-sub setup_chef {
-    my ( $class, $os_text, $os_version, $arch ) = @_;
-    my @osparam = ($os_text, $os_version, $arch);
-    my $installer    = File::Spec->catdir($Testament::OSList::WORKDIR, 'install-chef-solo.sh');
-    my $rbenv        = File::Spec->catdir($Testament::OSList::WORKDIR, '.rbenv');
-    my $rbenv_plugin = File::Spec->catdir($rbenv, 'plugins');
-    my $ruby_builder = File::Spec->catdir($rbenv_plugin, 'ruby-build');
-    unless ( -e $installer ) {
-        Testament::URLFetcher->wget(CHEF_INSTALLER_URL, $installer);
-    }
-    if (-e $rbenv) {
-        Testament::Git->pull($rbenv, 'origin', 'master');
-        Testament::Git->pull($ruby_builder, 'origin', 'master');
-    }
-    else {
-        Testament::Git->clone(RBENV_REPO, $rbenv);
-        Testament::Util->mkdir($rbenv_plugin);
-        Testament::Git->clone(RUBYBUILDER_REPO, $ruby_builder);
-    }
-    $class->put( @osparam, $rbenv, '/root/', '-r' );
-    $class->put( @osparam, $installer, '/root/' );
-    $class->exec( @osparam, 'sh /root/install-chef-solo.sh' );
+sub install_perl {
+    my ( $class, $os_text, $os_version, $arch, $perl_version ) = @_;
+    my @identity = ($os_text, $os_version, $arch); 
+    $class->exec(@identity, "( plenv || curl -L http://is.gd/plenvsetup | sh ); plenv install $perl_version && plenv global $perl_version && plenv install-cpanm");
 }
 
 1;
