@@ -13,7 +13,7 @@ sub mirrors {
     ($setup->{arch_short}, $setup->{arch_opt}) = $setup->arch =~ qr/^(.*)-linux(?:-(.*))?/;
     my $mirror_list = sprintf('http://mirrorlist.centos.org/?release=%s&arch=%s&repo=os', RELEASE, $setup->arch_short);
     my $res   = Testament::URLFetcher->get($mirror_list);
-    return (map { $_ =~ s/\n//g; $_; } split(/\n/, $res));
+    return (map {my $str = $_; $str =~ s/\n//g; $str} split(/\n/, $res));
 }
 
 sub prepare_install {
