@@ -158,6 +158,15 @@ sub _CMD_install_perl {
     Testament->install_perl( $os_text, $os_version, $arch, $version );
 }
 
+sub _CMD_box_config {
+    doc_note('config parameter of specified box');
+    doc_args('os-test os-version architecture key=value');
+    my ($self) = @_;
+    my ( $os_text, $os_version, $arch, $keyval ) = $self->mangle_args;
+    my ($key, $val) = split '=', $keyval, 2;
+    Testament->box_config( $os_text, $os_version, $arch, $key, $val );
+}
+
 # document generator (please better thing!)
 sub _gen_doc {
     no strict 'refs';

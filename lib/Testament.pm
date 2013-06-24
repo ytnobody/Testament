@@ -17,6 +17,7 @@ use Testament::Constants qw(
 );
 use File::Spec;
 use Expect;
+use Data::Dumper::Concise;
 
 our $VERSION = "0.01";
 
@@ -171,8 +172,23 @@ sub get {
 
 sub install_perl {
     my ( $class, $os_text, $os_version, $arch, $perl_version ) = @_;
-    my @identity = ($os_text, $os_version, $arch); 
-    $class->exec(@identity, "( plenv || curl -L http://is.gd/plenvsetup | sh ); plenv install $perl_version && plenv global $perl_version && plenv install-cpanm");
+    $class->exec($os_text, $os_version, $arch, "( plenv || curl -L http://is.gd/plenvsetup | sh ); plenv install $perl_version && plenv global $perl_version && plenv install-cpanm");
+}
+
+sub box_config {
+    my ( $class, $os_text, $os_version, $arch, $key, $val ) = @_;
+    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    unless ($key) {
+        print Dumper($config->{$identify_str});
+        return;
+    }
+    unless (defined $val) {
+        printf "%s\n", $config->{$identify_str}{$key};
+    }
+    else {
+        $config->{$identify_str}{$key} = $val;
+    }
+    Testament::OSList->save($config);
 }
 
 1;
@@ -236,6 +252,8 @@ Testament is a testing environment builder tool.
 =item help ([boxkey] or [(no arguments)]) : show this help
 
 =item failures ([boxkey] or [cpan-module-name]) : fetch and show boxes that failures testing
+
+=item box_config ([os-test os-version architecture key=value]) : config parameter of specified box
 
 =item get ([boxkey] or [os-test os-version architecture source-file dest-path]) : get file from specified box
 

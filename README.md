@@ -44,6 +44,7 @@ Testament is a testing environment builder tool.
 - put (\[boxkey\] or \[os-test os-version architecture source-file dest-path\]) : put file into specified box
 - help (\[boxkey\] or \[(no arguments)\]) : show this help
 - failures (\[boxkey\] or \[cpan-module-name\]) : fetch and show boxes that failures testing
+- box\_config (\[os-test os-version architecture key=value\]) : config parameter of specified box
 - get (\[boxkey\] or \[os-test os-version architecture source-file dest-path\]) : get file from specified box
 - kill (\[boxkey\] or \[os-test os-version architecture\]) : kill specified box
 - install\_perl (\[os-test os-version architecture version\]) : setup specified version perl into specified box
