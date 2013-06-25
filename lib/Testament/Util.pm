@@ -56,9 +56,11 @@ sub verify_required_commands {
 sub confirm {
     my ($class, $message, $default) = @_;
     autoflush STDOUT, 1;
-    print $message. " [$default] ";
+    print $default ? $message. " [$default] " : $message. " ";
     autoflush STDOUT, 0;
-    getline STDIN;
+    my $res = getline STDIN;
+    $res =~ s/\n//;
+    return $res || $default;
 }
 
 1;

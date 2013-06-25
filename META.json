@@ -65,6 +65,7 @@
             "JSON" : "0",
             "List::Util" : "0",
             "Log::Minimal" : "0",
+            "Module::Pluggable::Object" : "0",
             "Net::EmptyPort" : "0",
             "Proc::Simple" : "0",
             "Scope::Guard" : "0.20",

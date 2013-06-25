@@ -11,6 +11,7 @@ use Log::Minimal;
 use Proc::Simple;
 use Testament::Util;
 use Testament::BoxUtils;
+use Module::Pluggable::Object;
 
 sub boot {
     my ($self, $boot_opt, $boot_wait) = @_;
@@ -98,6 +99,13 @@ sub restore {
 sub vmdir {
     my $self = shift;
     return Testament::BoxUtils->vmdir($self->id);
+}
+
+sub available_subclasses {
+    my $class = shift;
+    my $finder = Module::Pluggable::Object->new(search_path => $class, require => 0);
+    my $manager_re = qr/^Testament::Virt::([A-Za-z_]+)$/;
+    map {my($man) = $_ =~ m[$manager_re]; $man } grep {m[$manager_re]} $finder->plugins;
 }
 
 1;

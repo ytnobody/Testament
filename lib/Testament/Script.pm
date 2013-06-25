@@ -7,6 +7,7 @@ use Carp;
 use Testament;
 use Testament::BoxSetting;
 use Testament::Util;
+use Testament::Helper;
 use Data::Dumper::Concise ();
 
 sub new {
@@ -45,15 +46,7 @@ sub _CMD_create {
     doc_note('create environment');
     doc_args('os-text os-version architecture');
     my ($self) = @_;
-
-    unless ( @{ $self->{args} }) {
-
-        # TODO implement!
-        # interaction mode
-        die 'Interaction mode has not implemented yet.'
-    }
-
-    my ( $os_text, $os_version, $arch ) = @{ $self->{args} };
+    my ( $os_text, $os_version, $arch ) = @{$self->{args}} ? @{$self->{args}} : Testament::Helper->create;
     Testament->setup( $os_text, $os_version, $arch );
 }
 

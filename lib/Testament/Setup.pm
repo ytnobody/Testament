@@ -19,6 +19,7 @@ use Class::Accessor::Lite (
         qw[iso_file digest_file_name remote_url_builder arch_short arch_opt digest_sha_type digest_matcher],
     ],
 );
+use Module::Pluggable::Object;
 
 sub new {
     my ( $class, %params ) = @_;
@@ -150,4 +151,12 @@ sub _get_downloaded_img_path {
 
     return $install_image;
 }
+
+sub available_subclasses {
+    my $class = shift;
+    my $finder = Module::Pluggable::Object->new(search_path => $class, require => 0);
+    my $os_re = qr/^Testament::Setup::([A-Za-z_]+)$/;
+    grep {$_ ne 'Interface'} map {my($man) = $_ =~ m[$os_re]; $man } grep {m[$os_re]} $finder->plugins;
+}
+
 1;
