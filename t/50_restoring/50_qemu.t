@@ -59,6 +59,23 @@ bravo
 EOS
 };
 
+subtest 'purge_backup' => sub {
+    my $tempdir     = pushd( tempdir( 'Testament-Temp-XXXX', CLEANUP => 1 ) );
+    my $current_dir = getcwd();
+
+    my $backup_img = 'backup_awesome.img';
+    open my $fh, '>', $backup_img;
+    close $fh;
+
+    ok -e File::Spec->catfile($current_dir, $backup_img);
+
+    my $guard = setup_mock_vmdir($current_dir);
+    $virt->purge_backup('awesome');
+
+    my @files = glob '*';
+    is scalar @files, 0;
+};
+
 done_testing;
 
 sub setup_mock_vmdir {
