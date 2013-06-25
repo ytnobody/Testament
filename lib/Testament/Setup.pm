@@ -4,6 +4,7 @@ use warnings;
 use File::Basename qw(basename);
 use Log::Minimal;
 use Digest::SHA2;
+use Testament::BoxUtils;
 use Testament::Util;
 use Testament::URLFetcher;
 use Testament::FastestMirror;
@@ -25,8 +26,8 @@ sub new {
         die "not allowed empty value for $key" unless $params{$key};
     }
     $params{identity} =
-      Testament::Util->box_identity( @params{qw/os_text os_version arch/} );
-    $params{vmdir}     = Testament::Util->vmdir( $params{identity} );
+      Testament::BoxUtils->box_identity( @params{qw/os_text os_version arch/} );
+    $params{vmdir}     = Testament::BoxUtils->vmdir( $params{identity} );
     $params{submodule} = $class . '::' . $params{os_text};
 
     require File::Spec->catfile( split( '::', $params{submodule} . '.pm' ) );

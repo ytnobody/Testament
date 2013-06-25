@@ -6,6 +6,7 @@ use Testament::Setup;
 use Testament::OSList;
 use Testament::Virt;
 use Testament::Virt::Vagrant;
+use Testament::BoxUtils;
 use Testament::Util;
 use Testament::URLFetcher;
 use Testament::Git;
@@ -40,7 +41,7 @@ sub setup {
     my $setup = Testament::Setup->new( os_text => $os_text, os_version => $os_version, arch => $arch );
     my $virt = $setup->do_setup;
     die sprintf('could not setup %s', $os_text) unless $virt;
-    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
     $config->{$identify_str} = $virt->as_hashref;
     Testament::OSList->save($config);
     return 1;
@@ -48,7 +49,7 @@ sub setup {
 
 sub boot {
     my ( $class, $os_text, $os_version, $arch ) = @_;
-    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
     my $box_conf = $config->{$identify_str};
     die sprintf('could not find config for %s', $identify_str) unless $box_conf;
     $box_conf->{id} = $identify_str;
@@ -58,7 +59,7 @@ sub boot {
 
 sub list {
     my ( $class ) = @_;
-    my @running = Testament::Util->running_boxes;
+    my @running = Testament::BoxUtils->running_boxes;
     my $max_l = (sort {$b <=> $a} map {length($_)} keys %$config)[0];
     $max_l ||= 6; # NOTE <= Length of index
     printf "% 6s % ".$max_l."s % 8s % 8s % 8s\n", 'KEY', 'BOX-ID', 'STATUS', 'RAM', 'SSH-PORT';
@@ -73,8 +74,8 @@ sub list {
 
 sub exec {
     my ( $class, $os_text, $os_version, $arch, $cmd ) = @_;
-    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
-    die sprintf("%s is not running", $identify_str) unless Testament::Util->is_box_running($identify_str);
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
+    die sprintf("%s is not running", $identify_str) unless Testament::BoxUtils->is_box_running($identify_str);
     my $box_conf = $config->{$identify_str};
     $box_conf->{id} = $identify_str;
     my @cmdlist = ('ssh', '-p', $box_conf->{ssh_port}, 'root@127.0.0.1');
@@ -111,16 +112,16 @@ sub enter {
 
 sub kill {
     my ( $class, $os_text, $os_version, $arch ) = @_;
-    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
-    my ( $proc ) = Testament::Util->is_box_running($identify_str);
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
+    my ( $proc ) = Testament::BoxUtils->is_box_running($identify_str);
     die sprintf("%s is not running", $identify_str) unless $proc;
     kill(15, $proc->{pid}); ### SIGTERM
 }
 
 sub delete {
     my ( $class, $os_text, $os_version, $arch ) = @_;
-    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
-    my ( $proc ) = Testament::Util->is_box_running($identify_str);
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
+    my ( $proc ) = Testament::BoxUtils->is_box_running($identify_str);
     if ( $proc ) {
         if ( Testament::Util->confirm("box '$identify_str' is running. Do you kill it ?", 'n') =~ /^y/i ) {
             $class->kill($os_text, $os_version, $arch);
@@ -129,7 +130,7 @@ sub delete {
             die "aborted";
         }
     }
-    my $vmdir = Testament::Util->vmdir($identify_str);
+    my $vmdir = Testament::BoxUtils->vmdir($identify_str);
     if ( Testament::Util->confirm("really want to remove bot '$identify_str' ?", 'n') =~ /^y/i ) {
         system("rm -rfv $vmdir");
         delete $config->{$identify_str};
@@ -139,8 +140,8 @@ sub delete {
 
 sub file_transfer {
     my ( $class, $os_text, $os_version, $arch, $src, $dst, $mode, @opts ) = @_;
-    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
-    die sprintf("%s is not running", $identify_str) unless Testament::Util->is_box_running($identify_str);
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
+    die sprintf("%s is not running", $identify_str) unless Testament::BoxUtils->is_box_running($identify_str);
     my $box_conf = $config->{$identify_str};
     my @cmdlist = ('scp', '-P', $box_conf->{ssh_port});
     push @cmdlist, @opts if @opts;
@@ -177,7 +178,7 @@ sub install_perl {
 
 sub box_config {
     my ( $class, $os_text, $os_version, $arch, $key, $val ) = @_;
-    my $identify_str = Testament::Util->box_identity($os_text, $os_version, $arch);
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
     unless ($key) {
         print Dumper($config->{$identify_str});
         return;

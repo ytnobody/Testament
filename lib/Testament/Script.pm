@@ -28,7 +28,7 @@ sub mangle_args {
     my $self = shift;
     my $args = $self->{args};
     return scalar(@$args) < 3 ? 
-        (Testament::Util->parse_box_identity(shift(@$args)), @$args) :
+        (Testament::BoxUtils->parse_box_identity(shift(@$args)), @$args) :
         (shift(@$args), shift(@$args), shift(@$args))
     ;
 }
