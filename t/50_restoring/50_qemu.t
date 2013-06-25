@@ -76,6 +76,33 @@ subtest 'purge_backup' => sub {
     is scalar @files, 0;
 };
 
+subtest 'restore' => sub {
+    my $tempdir     = pushd( tempdir( 'Testament-Temp-XXXX', CLEANUP => 1 ) );
+    my $current_dir = getcwd();
+
+    my $hda_img = 'hda.img';
+
+    my $fh;
+    open $fh, '>', $hda_img;
+    print $fh 'master';
+    close $fh;
+
+    open $fh, '>', 'backup_awesome.img';
+    print $fh 'awesome!';
+    close $fh;
+
+    open $fh, '<', $hda_img;
+    is <$fh>, 'master';
+    close $fh;
+
+    my $guard = setup_mock_vmdir($current_dir);
+    $virt->restore('awesome');
+
+    open $fh, '<', $hda_img;
+    is <$fh>, 'awesome!';
+    close $fh;
+};
+
 done_testing;
 
 sub setup_mock_vmdir {
