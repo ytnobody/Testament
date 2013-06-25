@@ -44,18 +44,22 @@ sub install_box {
 }
 
 sub backup {
-    ...
+    ### XXX implement
+    warn "unimplemented";
 }
 
 sub backup_list {
-    ...
+    ### XXX implement
+    warn "unimplemented";
 }
 
 sub restore {
-    ...
+    ### XXX implement
+    warn "unimplemented";
 }
 
 sub purge_backup {
-    ...
+    ### XXX implement
+    warn "unimplemented";
 }
 1;
