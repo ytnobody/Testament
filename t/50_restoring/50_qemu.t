@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use utf8;
+use Capture::Tiny qw/capture/;
 use File::Spec;
 use Scope::Guard;
 use t::FileUtil;
@@ -34,6 +35,28 @@ subtest 'backup' => sub {
         $virt->backup($subname);
         ok -e File::Spec->catfile($current_dir, 'backup_awesome.img');
     };
+};
+
+subtest 'backup_list' => sub {
+    my $tempdir     = pushd( tempdir( 'Testament-Temp-XXXX', CLEANUP => 1 ) );
+    my $current_dir = getcwd();
+
+    my $fh;
+    open $fh, '>', 'hda.img';
+    close $fh;
+    open $fh, '>', 'backup_alpha.img';
+    close $fh;
+    open $fh, '>', 'backup_bravo.img';
+    close $fh;
+
+    my $guard = setup_mock_vmdir($current_dir);
+
+    my ($got) = capture { $virt->backup_list() };
+
+    is $got, <<EOS;
+alpha
+bravo
+EOS
 };
 
 done_testing;
