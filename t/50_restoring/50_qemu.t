@@ -19,6 +19,7 @@ subtest 'backup' => sub {
     my $current_dir = getcwd();
 
     open my $fh, '>', 'hda.img';
+    print $fh 'master';
     close $fh;
 
     my $guard = setup_mock_vmdir($current_dir);
@@ -27,13 +28,20 @@ subtest 'backup' => sub {
         $virt->backup();
         my @files = grep { $_ ne 'hda.img' } glob "*";
         my $file = shift @files;
-        like $file, qr/\Abackup_\d*\.\d*.img\Z/;
+        open $fh, '<', $file;
+        is <$fh>, 'master', 'copy correctly';
+        close $fh;
+        like $file, qr/\Abackup_\d*\.\d*.img\Z/, 'Filename should be time stamp';
     };
 
     subtest 'specify subname' => sub {
         my $subname = 'awesome';
+        my $cloned  = "backup_$subname.img";
         $virt->backup($subname);
-        ok -e File::Spec->catfile($current_dir, 'backup_awesome.img');
+        open $fh, '<', $cloned;
+        is <$fh>, 'master', 'copy correctly';
+        close $fh;
+        ok -e File::Spec->catfile($current_dir, 'backup_awesome.img'), 'Filename should be specified string';
     };
 };
 
@@ -73,7 +81,7 @@ subtest 'purge_backup' => sub {
     $virt->purge_backup('awesome');
 
     my @files = glob '*';
-    is scalar @files, 0;
+    is scalar @files, 0, 'Remove img file correctly';
 };
 
 subtest 'restore' => sub {
@@ -99,7 +107,7 @@ subtest 'restore' => sub {
     $virt->restore('awesome');
 
     open $fh, '<', $hda_img;
-    is <$fh>, 'awesome!';
+    is <$fh>, 'awesome!', 'restore correctly';
     close $fh;
 };
 
