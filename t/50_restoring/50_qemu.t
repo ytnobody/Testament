@@ -22,9 +22,18 @@ subtest 'backup' => sub {
 
     my $guard = setup_mock_vmdir($current_dir);
 
-    my $subname = 'awesome';
-    $virt->backup($subname);
-    ok -e File::Spec->catfile($current_dir, 'backup_awesome.img');
+    subtest 'not specify subname' => sub {
+        $virt->backup();
+        my @files = grep { $_ ne 'hda.img' } glob "*";
+        my $file = shift @files;
+        like $file, qr/\Abackup_\d*\.\d*.img\Z/;
+    };
+
+    subtest 'specify subname' => sub {
+        my $subname = 'awesome';
+        $virt->backup($subname);
+        ok -e File::Spec->catfile($current_dir, 'backup_awesome.img');
+    };
 };
 
 done_testing;
