@@ -43,7 +43,7 @@ sub execute {
 
 sub _CMD_create {
     doc_note('create environment');
-    doc_args('os-test os-version architecture');
+    doc_args('os-text os-version architecture');
     my ($self) = @_;
 
     unless ( @{ $self->{args} }) {
@@ -60,7 +60,7 @@ sub _CMD_create {
 # TODO Is it really necessary?
 sub _CMD_install {
     doc_note('alias for create');
-    doc_args('os-test os-version architecture');
+    doc_args('os-text os-version architecture');
     my ($self) = @_;
     $self->_CMD_create();
 }
@@ -83,7 +83,7 @@ sub _CMD_failures {
 
 sub _CMD_boot {
     doc_note('boot-up specified box');
-    doc_args('os-test os-version architecture');
+    doc_args('os-text os-version architecture');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->boot( $os_text, $os_version, $arch );
@@ -103,7 +103,7 @@ sub _CMD_list {
 
 sub _CMD_enter {
     doc_note('enter into box');
-    doc_args('os-test os-version architecture');
+    doc_args('os-text os-version architecture');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->enter( $os_text, $os_version, $arch );
@@ -111,7 +111,7 @@ sub _CMD_enter {
 
 sub _CMD_exec {
     doc_note('execute command into box');
-    doc_args('os-test os-version architecture commands...');
+    doc_args('os-text os-version architecture commands...');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch, @cmdlist ) = $self->mangle_args;
     my $cmd = join(' ', @cmdlist);
@@ -120,7 +120,7 @@ sub _CMD_exec {
 
 sub _CMD_kill {
     doc_note('kill specified box');
-    doc_args('os-test os-version architecture');
+    doc_args('os-text os-version architecture');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->kill( $os_text, $os_version, $arch);
@@ -128,7 +128,7 @@ sub _CMD_kill {
 
 sub _CMD_delete {
     doc_note('delete specified box');
-    doc_args('os-test os-version architecture');
+    doc_args('os-text os-version architecture');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch ) = $self->mangle_args;
     Testament->delete( $os_text, $os_version, $arch);
@@ -136,7 +136,7 @@ sub _CMD_delete {
 
 sub _CMD_put {
     doc_note('put file into specified box');
-    doc_args('os-test os-version architecture source-file dest-path');
+    doc_args('os-text os-version architecture source-file dest-path');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch, $src, $dst ) = $self->mangle_args;
     Testament->put( $os_text, $os_version, $arch, $src, $dst );
@@ -144,7 +144,7 @@ sub _CMD_put {
 
 sub _CMD_get {
     doc_note('get file from specified box');
-    doc_args('os-test os-version architecture source-file dest-path');
+    doc_args('os-text os-version architecture source-file dest-path');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch, $src, $dst ) = $self->mangle_args;
     Testament->get( $os_text, $os_version, $arch, $src, $dst );
@@ -152,7 +152,7 @@ sub _CMD_get {
 
 sub _CMD_install_perl {
     doc_note('setup specified version perl into specified box');
-    doc_args('os-test os-version architecture version');
+    doc_args('os-text os-version architecture version');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch, $version ) = $self->mangle_args;
     Testament->install_perl( $os_text, $os_version, $arch, $version );
@@ -160,11 +160,43 @@ sub _CMD_install_perl {
 
 sub _CMD_box_config {
     doc_note('config parameter of specified box');
-    doc_args('os-test os-version architecture key=value');
+    doc_args('os-text os-version architecture key=value');
     my ($self) = @_;
     my ( $os_text, $os_version, $arch, $keyval ) = $self->mangle_args;
     my ($key, $val) = split '=', $keyval, 2;
     Testament->box_config( $os_text, $os_version, $arch, $key, $val );
+}
+
+sub _CMD_backup {
+    doc_note('backup specified box image');
+    doc_args('os-text os-version architecture backup_name');
+    my ($self) = @_;
+    my ($os_text, $os_version, $arch, $subname) = $self->mangle_args;
+    Testament->backup($os_text, $os_version, $arch, $subname);
+}
+
+sub _CMD_backup_list {
+    doc_note('show backup list of specified box');
+    doc_args('os-text os-version architecture');
+    my ($self) = @_;
+    my ($os_text, $os_version, $arch) = $self->mangle_args;
+    Testament->backup_list($os_text, $os_version, $arch);
+}
+
+sub _CMD_purge_backup {
+    doc_note('purge specified backup image');
+    doc_args('os-text os-version architecture backup_name');
+    my ($self) = @_;
+    my ($os_text, $os_version, $arch, $subname) = $self->mangle_args;
+    Testament->purge_backup($os_text, $os_version, $arch, $subname);
+}
+
+sub _CMD_restore {
+    doc_note('restore from specified backup image');
+    doc_args('os-text os-version architecture backup_name');
+    my ($self) = @_;
+    my ($os_text, $os_version, $arch, $subname) = $self->mangle_args;
+    Testament->restore($os_text, $os_version, $arch, $subname);
 }
 
 # document generator (please better thing!)

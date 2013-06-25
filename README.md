@@ -54,6 +54,10 @@ Testament is a testing environment builder tool.
 - version \[(no arguments)\] : show testament version
 - delete (\[boxkey\] or \[os-test os-version architecture\]) : delete specified box
 - exec (\[boxkey\] or \[os-test os-version architecture commands...\]) : execute command into box
+- backup\_list (\[os-text os-version architecture\]) : show backup list of specified box
+- backup (\[os-text os-version architecture backup\_name\]) : backup specified box image
+- restore (\[os-text os-version architecture backup\_name\]) : restore from specified backup image
+- purge\_backup (\[os-text os-version architecture backup\_name\]) : purge specified backup image
 
 # LICENSE
 

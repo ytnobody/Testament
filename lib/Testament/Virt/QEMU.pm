@@ -4,11 +4,14 @@ use warnings;
 use Net::EmptyPort 'empty_port';
 use File::Which 'which';
 use Log::Minimal;
+use File::Spec;
 use Class::Accessor::Lite (
     new => 1,
     ro => [qw[virt]],
     rw => [qw[handler]],
 );
+use Time::HiRes;
+use File::Copy;
 
 sub boot {
     my ($self, %opts) = @_; 
@@ -52,6 +55,43 @@ sub create_image {
     my @options = (qw(create -f qcow2), $path, $size);
     my $cmd = sprintf('%s %s', $bin, join(' ', @options));
     `$cmd`;
+}
+
+sub backup {
+    my ($self, $subname) = @_;
+    $subname ||= Time::HiRes::time();
+    my $hda = File::Spec->catfile( $self->virt->vmdir, 'hda.img' );
+    my $dst = File::Spec->catfile( $self->virt->vmdir, "backup_$subname.img" );
+    infof('copying %s to %s', $hda, $dst);
+    copy($hda, $dst);
+}
+
+sub backup_list {
+    my ($self) = @_;
+    my $glob = File::Spec->catfile( $self->virt->vmdir, 'backup_*.img' );
+    (my $pattern = $glob) =~ s/\//\\\//g;
+    $pattern =~ s/\*\./(.+)./;
+    print join("", (map {my($name) = $_ =~ m/$pattern/; $name."\n"} glob($glob)));
+}
+
+sub purge_backup {
+    my ($self, $subname) = @_;
+    unless ($subname) {
+        critf('must specify backup name');
+        die;
+    }
+    my $dst = File::Spec->catfile( $self->virt->vmdir, "backup_$subname.img" );
+    infof('purge backup image %s', $dst);
+    unlink($dst);
+}
+
+sub restore {
+    my ($self, $subname) = @_;
+    $subname ||= Time::HiRes::time();
+    my $backup = File::Spec->catfile( $self->virt->vmdir, "backup_$subname.img" );
+    my $hda = File::Spec->catfile( $self->virt->vmdir, 'hda.img' );
+    infof('copying %s to %s', $backup, $hda);
+    copy($backup, $hda);
 }
 
 1;

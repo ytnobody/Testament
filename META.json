@@ -57,6 +57,7 @@
             "Data::Dumper::Concise" : "0",
             "Digest::SHA2" : "0",
             "Expect" : "0",
+            "File::Copy" : "0",
             "File::Path" : "0",
             "File::Which" : "0",
             "Furl" : "2.10",

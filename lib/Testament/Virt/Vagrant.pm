@@ -42,4 +42,20 @@ sub install_box {
     # add box
     system( sprintf( 'vagrant box add %s %s', $box_info->{os}, $target ) );
 }
+
+sub backup {
+    ...
+}
+
+sub backup_list {
+    ...
+}
+
+sub restore {
+    ...
+}
+
+sub purge_backup {
+    ...
+}
 1;

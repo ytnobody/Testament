@@ -10,6 +10,7 @@ use Net::EmptyPort 'empty_port';
 use Log::Minimal;
 use Proc::Simple;
 use Testament::Util;
+use Testament::BoxUtils;
 
 sub boot {
     my ($self, $boot_opt, $boot_wait) = @_;
@@ -64,6 +65,39 @@ sub as_hashref {
     return +{
         map {($_ => $self->$_)} keys %$self
     };
+}
+
+sub backup {
+    my ($self, $subname) = @_;
+    my $subclass = $self->load_subclass;
+    my $virt = $subclass->new(virt => $self);
+    $virt->backup($subname);
+}
+
+sub backup_list {
+    my ($self) = @_;
+    my $subclass = $self->load_subclass;
+    my $virt = $subclass->new(virt => $self);
+    $virt->backup_list;
+}
+
+sub purge_backup {
+    my ($self, $subname) = @_;
+    my $subclass = $self->load_subclass;
+    my $virt = $subclass->new(virt => $self);
+    $virt->purge_backup($subname);
+}
+
+sub restore {
+    my ($self, $subname) = @_;
+    my $subclass = $self->load_subclass;
+    my $virt = $subclass->new(virt => $self);
+    $virt->restore($subname);
+}
+
+sub vmdir {
+    my $self = shift;
+    return Testament::BoxUtils->vmdir($self->id);
 }
 
 1;

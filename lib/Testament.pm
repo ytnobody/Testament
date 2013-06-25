@@ -192,6 +192,34 @@ sub box_config {
     Testament::OSList->save($config);
 }
 
+sub backup {
+    my ( $class, $os_text, $os_version, $arch, $subname ) = @_;
+    $class->load_virt($os_text, $os_version, $arch)->backup($subname);
+}
+
+sub backup_list {
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    $class->load_virt($os_text, $os_version, $arch)->backup_list;
+}
+
+sub purge_backup {
+    my ( $class, $os_text, $os_version, $arch, $subname ) = @_;
+    $class->load_virt($os_text, $os_version, $arch)->purge_backup($subname);
+}
+
+sub restore {
+    my ( $class, $os_text, $os_version, $arch, $subname ) = @_;
+    $class->load_virt($os_text, $os_version, $arch)->restore($subname);
+}
+
+sub load_virt {
+    my ( $class, $os_text, $os_version, $arch ) = @_;
+    my $identify_str = Testament::BoxUtils->box_identity($os_text, $os_version, $arch);
+    my $vmdir = Testament::BoxUtils->vmdir($identify_str);
+    my $box_conf = $config->{$identify_str};
+    Testament::Virt->new(%$box_conf);
+}
+
 1;
 __END__
 
@@ -273,6 +301,14 @@ Testament is a testing environment builder tool.
 =item delete ([boxkey] or [os-test os-version architecture]) : delete specified box
 
 =item exec ([boxkey] or [os-test os-version architecture commands...]) : execute command into box
+
+=item backup_list ([os-text os-version architecture]) : show backup list of specified box
+
+=item backup ([os-text os-version architecture backup_name]) : backup specified box image
+
+=item restore ([os-text os-version architecture backup_name]) : restore from specified backup image
+
+=item purge_backup ([os-text os-version architecture backup_name]) : purge specified backup image
 
 =back
 
