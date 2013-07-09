@@ -28,7 +28,7 @@ sub boot {
     my $bin = which('qemu-system-'.$arch);
     my @options = (
         '-m'       => $virt->ram,
-        '-smp'     => sprintf('cores=%s', $virt->core || 1),
+        '-smp'     => $virt->core || 1,
         '-hda'     => $virt->hda,
         '-redir'   => sprintf('tcp:%d::22', $virt->ssh_port),
         '-serial'  => 'null',
