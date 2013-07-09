@@ -4,7 +4,7 @@
       "ytnobody <ytnobody aaaaatttttt gmail>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.130880",
+   "generated_by" : "Minilla/v0.5.5, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -92,6 +92,6 @@
       "ichigotake <k.wisiiy@gmail.com>",
       "root <root@ubuntu.(none)>",
       "moznion <moznion@gmail.com>",
-      "ytnobody <ytnobody@gmail.com>"
+      "ytnobody / satoshi azuma <ytnobody@gmail.com>"
    ]
 }

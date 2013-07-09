@@ -4,7 +4,7 @@ use warnings;
 use Class::Load qw[load_class is_class_loaded];
 use Class::Accessor::Lite (
     new => 1,
-    rw => [qw[ id subclass arch cdrom hda ssh_port ram ]],
+    rw => [qw[ id subclass arch cdrom hda ssh_port ram core ]],
 );
 use Net::EmptyPort 'empty_port';
 use Log::Minimal;
@@ -26,8 +26,13 @@ sub boot {
         $ram ||= $ENV{TESTAMENT_VM_RAM} || 512;
         $self->ram($ram);
     }
+    unless ($self->core) {
+        my ($core) = Testament::Util->confirm('Specify core numbers that allocates to this box', 1) =~ m/^([0-9]+)/;
+        $core ||= 1;
+        $self->core($core);
+    }
 
-    infof('BOOT hda:%s ram:%sMBytes ssh_port:%d', $self->hda, $self->ram, $self->ssh_port);
+    infof('BOOT hda:%s core:%s ram:%sMBytes ssh_port:%d', $self->hda, $self->core, $self->ram, $self->ssh_port);
     $0 = sprintf( '%s [%s] %s ssh=%s ram=%s', __PACKAGE__, $self->subclass || 'QEMU', $self->id, $self->ssh_port, $self->ram );
 
     my $vm = $subclass->new(virt => $self);
